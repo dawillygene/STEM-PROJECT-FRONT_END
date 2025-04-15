@@ -1,13 +1,106 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* :root {
+    --font-inter: 'Inter', sans-serif;
+    --font-montserrat: 'Montserrat', sans-serif;
+    --font-poppins: 'Poppins', sans-serif;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+body {
+    font-family: var(--font-inter);
 }
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--font-montserrat);
+}
+
+button,
+.button {
+    font-family: var(--font-poppins);
+}
+
+.bg-primary {
+    background-color: #0066CC;
+}
+
+.bg-secondary {
+    background-color: #FFAD03;
+}
+
+.bg-tertiary {
+    background-color: #FD9148;
+}
+
+.text-primary {
+    color: #0066CC;
+}
+
+.text-secondary {
+    color: #FFAD03;
+}
+
+.text-tertiary {
+    color: #FD9148;
+}
+
+.border-primary {
+    border-color: #0066CC;
+}
+
+.border-secondary {
+    border-color: #FFAD03;
+}
+
+.border-tertiary {
+    border-color: #FD9148;
+}
+
+.btn-primary {
+    background-color: #0066CC;
+    color: white;
+    transition: all 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #0055aa;
+}
+
+.btn-secondary {
+    background-color: #FFAD03;
+    color: white;
+    transition: all 0.3s;
+}
+
+.btn-secondary:hover {
+    background-color: #e69c00;
+}
+
+.btn-tertiary {
+    background-color: #FD9148;
+    color: white;
+    transition: all 0.3s;
+}
+
+.btn-tertiary:hover {
+    background-color: #ec8035;
+}
+
+.shadow-custom {
+    box-shadow: 0 4px 6px rgba(0, 102, 204, 0.1);
+}
+
+.section-heading::after {
+    content: "";
+    display: block;
+    width: 100px;
+    height: 4px;
+    background-color: #FFAD03;
+    margin-top: 10px;
+} */

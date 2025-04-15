@@ -1,0 +1,87 @@
+/* Hero.css */
+
+
+/* Import font recommendations */
+
+
+/* Base styles */
+
+.hero-section {
+    font-family: 'Inter', sans-serif;
+}
+
+
+/* Typography styles */
+
+.hero-heading {
+    font-family: 'Poppins', sans-serif;
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 700;
+    line-height: 1.2;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.hero-subheading {
+    font-family: 'Inter', sans-serif;
+    font-size: clamp(1rem, 3vw, 1.25rem);
+    line-height: 1.6;
+    max-width: 600px;
+}
+
+
+/* Button styles */
+
+.hero-button {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.primary-button {
+    background-color: #FFAD03;
+}
+
+.primary-button:hover {
+    background-color: #e69b00;
+}
+
+.secondary-button {
+    background-color: white;
+    color: #0066CC;
+}
+
+.secondary-button:hover {
+    background-color: #f2f2f2;
+}
+
+
+/* Search elements */
+
+.search-input {
+    font-family: 'Inter', sans-serif;
+}
+
+.search-input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: white;
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.search-button {
+    font-family: 'Montserrat', sans-serif;
+}
+
+
+/* Container for larger screens */
+
+@media (min-width: 768px) {
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+}
