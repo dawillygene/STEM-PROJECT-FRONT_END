@@ -67,12 +67,12 @@ const Hero = () => {
             </motion.div>
 
             <motion.div
-              className="w-full sm:w-4/5 md:w-1/2 lg:w-7/12 xl:w-6/12 flex justify-end items-center md:ml-auto"
+              className="w-full sm:w-4/5 md:w-1/2 lg:w-7/12 xl:w-6/12 flex justify-center md:justify-end items-center md:ml-auto"
               initial={{ opacity: 0, x: 100 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, ease: "easeOut" }}
             >
-              <div className="relative w-full max-w-sm sm:max-w-md lg:max-w-xl">
+              <div className="relative w-full max-w-sm sm:max-w-md lg:max-w-xl mx-auto md:mx-0">
                 <motion.div
                   className="absolute inset-0 rounded-xl overflow-hidden z-0"
                   initial={{ opacity: 0 }}
@@ -93,7 +93,7 @@ const Hero = () => {
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ duration: 0.8, delay: 0.3 }}
                 >
-                  <form className="flex flex-col sm:flex-row gap-2 items-end w-full">
+                  <form className="flex flex-col sm:flex-row gap-2 items-center sm:items-end w-full">
                     <motion.input
                       type="text"
                       placeholder="Search for programs..."

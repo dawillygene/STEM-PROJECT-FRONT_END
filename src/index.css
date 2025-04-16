@@ -9,8 +9,7 @@
     font-style: normal;
 }
 
-
-/* :root {
+ :root {
     --font-inter: 'Inter', sans-serif;
     --font-montserrat: 'Montserrat', sans-serif;
     --font-poppins: 'Poppins', sans-serif;
@@ -111,4 +110,24 @@ button,
     height: 4px;
     background-color: #FFAD03;
     margin-top: 10px;
-} */
+}
+
+.newsletter-animation {
+    position: relative;
+    overflow: hidden;
+}
+
+.newsletter-animation::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: rgba(255, 255, 255, 0.2);
+    transform: rotate(30deg);
+    animation: shine 3s infinite linear;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
