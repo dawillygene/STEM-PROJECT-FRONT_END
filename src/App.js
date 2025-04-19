@@ -8,6 +8,7 @@ import Gallery from './pages/Gallery';
 import Team from './pages/Team';
 import About from './pages/About';
 import NotFound from './pages/NotFound';
+import BlogTest from './pages/BlogTest';
 
 function App() {
   return (
@@ -19,7 +20,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/contact" element={<Contact />} />
-            <Route path="/blog" element={<Blog />} /> 
+            <Route path="/blog" element={<BlogTest />} /> 
             <Route path="/team" element={<Team />} />
             <Route path="/gallery" element={<Gallery />} />
             <Route path="/about" element={<About />} />

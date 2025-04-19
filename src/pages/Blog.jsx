@@ -59,6 +59,7 @@ const Blog = () => {
                 description: "Breaking barriers...",
             },
         ],
+       
         blogPosts: [
             {
                 id: 1,
@@ -170,6 +171,7 @@ const Blog = () => {
                 buttonText: "Subscribe",
                 successText: "Subscribed!",
             },
+           
             popularArticles: {
                 title: "Popular Articles",
                 articles: [

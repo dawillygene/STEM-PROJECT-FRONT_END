@@ -1,0 +1,107 @@
+{
+    "blogData": {
+        "title": "Blog | Publication",
+        "description": "Exploring innovations and insights in Mathematics and Science Education in Tanzania",
+        "featuredPost": {
+            "title": "Transforming STEM Education: New Approaches in Tanzanian Schools",
+            "excerpt": "Discover how innovative teaching methods and laboratory experiences are changing the way students engage with science and mathematics in Tanzania's secondary schools...",
+            "tags": [
+                { "label": "Featured", "color": "#FFAD03", "textColor": "#333" },
+                { "label": "STEM Education", "color": "#0066CC", "textColor": "white" }
+            ],
+            "author": {
+                "name": "Prof. Julius Nyahongo",
+                "initials": "JN",
+                "image": "https://via.placeholder.com/150"
+            },
+            "date": "November 15, 2022",
+            "readTime": "8 min read",
+            "button": { "label": "Read More", "color": "#FD9148" }
+        }
+    },
+    "categories": [
+        { "id": "all", "name": "All" },
+        { "id": "stem", "name": "STEM Education" },
+        { "id": "teacher", "name": "Teacher Training" },
+        { "id": "laboratories", "name": "Laboratories" },
+        { "id": "community", "name": "Community Engagement" }
+    ],
+    "blogPosts": [{
+            "id": 1,
+            "image": "https://via.placeholder.com/300",
+            "alt": "STEM Classroom",
+            "category": "STEM Education",
+            "categoryId": "stem",
+            "title": "Building STEM Capacity in Tanzania's Secondary Schools",
+            "content": "Tanzania's future depends on developing strong STEM capabilities in its youth. This article explores the current challenges and opportunities in building robust STEM education programs across secondary schools in Tanzania.",
+            "author": { "name": "Dr. Rose E. Matete", "initials": "RM", "date": "November 10, 2022 · 6 min read" },
+            "reactions": { "likes": 24, "comments": 8 }
+        },
+        {
+            "id": 2,
+            "image": "https://via.placeholder.com/300",
+            "alt": "Teacher Training",
+            "category": "Teacher Training",
+            "categoryId": "teacher",
+            "title": "Empowering Teachers: The Key to Effective STEM Education",
+            "content": "This article discusses the importance of teacher training in STEM education and how it can significantly impact student engagement and learning outcomes.",
+            "author": { "name": "Prof. Julius Nyahongo", "initials": "JN", "date": "November 5, 2022 · 5 min read" },
+            "reactions": { "likes": 18, "comments": 4 }
+        },
+        {
+            "id": 3,
+            "image": "https://via.placeholder.com/300",
+            "alt": "Laboratory Experience",
+            "category": "Laboratories",
+            "categoryId": "laboratories",
+            "title": "Enhancing Laboratory Experiences in Tanzanian Schools",
+            "content": "This article highlights the importance of hands-on laboratory experiences in STEM education and how they can enhance student learning and interest in science.",
+            "author": { "name": "Dr. Amani Mhando", "initials": "AM", "date": "October 30, 2022 · 7 min read" },
+            "reactions": { "likes": 15, "comments": 6 }
+        },
+        {
+            "id": 4,
+            "image": "https://via.placeholder.com/300",
+            "alt": "Community Engagement",
+            "category": "Community Engagement",
+            "categoryId": "community",
+            "title": "Engaging Communities in STEM Education",
+            "content": "This article discusses the role of community engagement in promoting STEM education and how local communities can support schools in enhancing STEM learning.",
+            "author": { "name": "Dr. Amani Mhando", "initials": "AM", "date": "October 25, 2022 · 5 min read" },
+            "reactions": { "likes": 10, "comments": 3 }
+        }
+
+    ],
+    "popularArticles": [{
+            "image": "https://via.placeholder.com/150",
+            "alt": "Science",
+            "title": "The Future of STEM Education in Tanzania",
+            "views": "3,256 views"
+        }
+
+    ],
+    "comments": [{
+            "author": "Maria Bukuku",
+            "initials": "MB",
+            "time": "2 days ago",
+            "content": "This initiative is exactly what we need in our schools. As a science teacher in a rural secondary school, I've seen firsthand how limited resources impact learning outcomes. I'm excited to see how this program develops!",
+            "likes": 12,
+            "replies": [{
+                "author": "Dr. Rose Matete",
+                "initials": "RM",
+                "time": "1 day ago",
+                "content": "Thank you for sharing your experience, Maria. We'd love to hear more about the specific challenges you face. Please reach out to us directly at stem@udom.ac.tz.",
+                "likes": 5
+            }]
+        },
+        {
+            "author": "John Mwita",
+            "initials": "JM",
+            "time": "3 days ago",
+            "content": "I believe that investing in teacher training is crucial for the success of STEM education. We need to equip our teachers with the right skills and knowledge to inspire the next generation of scientists and engineers.",
+            "likes": 8,
+            "replies": []
+        }
+
+    ]
+}
