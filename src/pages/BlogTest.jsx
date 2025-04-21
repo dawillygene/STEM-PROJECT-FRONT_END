@@ -187,7 +187,9 @@ const BlogTest = () => {
   
     try {
       const result = await blogService.subscribeNewsletter(email);
-      alert(result.message || 'Subscribed successfully!');
+      // alert(result.message || 'Subscribed successfully!');
+      // console.log('Subscribed successfully:', result.message);
+      alert(result.message);
       e.target.reset();
     } catch (error) {
       console.error('Error subscribing to newsletter:', error);

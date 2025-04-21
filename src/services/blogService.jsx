@@ -118,6 +118,7 @@
 
 import API from './api';
 
+
 const blogService = {
   getBlogData: async () => {
     try {
@@ -166,24 +167,41 @@ const blogService = {
   },
 
 
-  async subscribeNewsletter(email) {
+
+
+
+
+  // async subscribeNewsletter(email) {
+  //   try {
+  //     const response = await fetch('/api/newsletter/subscribe', {
+  //       method: 'POST',
+  //       headers: { 'Content-Type': 'application/json' },
+  //       body: JSON.stringify({ email }),
+  //     });
+  //     return await response.json();
+  //   } catch (error) {
+  //     console.error('Error subscribing to newsletter:', error);
+  //     throw error;
+  //   }
+  // },
+
+
+  subscribeNewsletter :async (email) => {
     try {
-      // API call to subscribe to newsletter
-      const response = await fetch('/api/newsletter/subscribe', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
-      });
-      return await response.json();
+      const response = await API.post('file.php', { email });
+      console.log('Response from newsletter subscription:', response.data);
+      return response.data;
     } catch (error) {
       console.error('Error subscribing to newsletter:', error);
       throw error;
     }
   },
 
+
+
   postComment: async (commentData) => {
         try {
-          const response = await API.post('/blog/comments', commentData);
+          const response = await API.post('comments.php', commentData);
           return response.data;
         } catch (error) {
           console.error('Error posting comment:', error);
