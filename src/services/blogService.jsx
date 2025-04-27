@@ -116,13 +116,13 @@
 
 // export default blogService;
 
-import API from './api';
+
 
 
 const blogService = {
   getBlogData: async () => {
     try {
-      const response = await API.get('/blogData.json');
+      const response = await fetch('api/blog/posts');
       return response.data.blogData;
     } catch (error) {
       console.error('Error fetching blog data:', error);
@@ -132,7 +132,7 @@ const blogService = {
 
   getBlogPosts: async (category = 'all') => {
     try {
-      const response = await API.get('/blogData.json');
+      const response = await fetch('api/blog');
       const allPosts = response.data.blogPosts;
       
       if (category === 'all') {
@@ -148,7 +148,7 @@ const blogService = {
 
   getCategories: async () => {
     try {
-      const response = await API.get('/blogData.json');
+      const response = await fetch('api/blog');
       return response.data.categories;
     } catch (error) {
       console.error('Error fetching categories:', error);
@@ -158,7 +158,7 @@ const blogService = {
 
   getPopularArticles: async () => {
     try {
-      const response = await API.get('/blogData.json');
+      const response = await fetch('api/blog');
       return response.data.popularArticles;
     } catch (error) {
       console.error('Error fetching popular articles:', error);

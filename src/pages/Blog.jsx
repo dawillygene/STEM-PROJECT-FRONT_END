@@ -1,7 +1,65 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+
 import { motion } from "framer-motion";
 import Search from '../components/Search/SearchWithDropdown';
+// import STATIC_COMMENTS from '../constants/Comments';
+
+
+const STATIC_COMMENTS = {
+    1: [
+      {
+        id: 1,
+        author: "Maria Bukuku",
+        initials: "MB",
+        time: "2 days ago",
+        content: "This initiative is exactly what we need in our schools. As a science teacher in a rural secondary school, I've seen firsthand how limited resources impact learning outcomes.",
+        likes: 12,
+        replies: [
+          {
+            id: 1,
+            author: "Dr. Rose Matete",
+            initials: "RM",
+            time: "1 day ago",
+            content: "Thank you for sharing your experience, Maria. We'd love to hear more about the specific challenges you face.",
+            likes: 5,
+          },
+        ],
+      },
+    ],
+    2: [
+      {
+        id: 1,
+        author: "James Kimaro",
+        initials: "JK",
+        time: "3 days ago",
+        content: "What specific strategies are being considered to encourage more girls to pursue STEM subjects? This is a critical issue in our region.",
+        likes: 8,
+        replies: [],
+      },
+    ],
+    3: [
+      {
+        id: 1,
+        author: "Fatima Hassan",
+        initials: "FH",
+        time: "1 week ago",
+        content: "The laboratory equipment mentioned in this article has transformed how our students engage with practical science. It's making a real difference!",
+        likes: 15,
+        replies: [
+          {
+            id: 1,
+            author: "Prof. Julius Nyahongo",
+            initials: "JN",
+            time: "6 days ago",
+            content: "Glad to hear that, Fatima! We're planning to expand this program to more schools in the coming year.",
+            likes: 7,
+          },
+        ],
+      },
+    ],
+  };
+
 
 
 const blogData = {
@@ -30,7 +88,21 @@ const blogData = {
 
 
 
+const posts = await fetch('api/blog/posts');
+const postData = await posts.json();
+
+const categories = await fetch('api/blog/categories');
+const categoryData = await categories.json();
+
+const PopularArticles = await fetch('api/blog/popular');
+const popularArticles = await PopularArticles.json();
+
+
+
+
 const Blog = () => {
+
+
 
     const CONTENT = {
         header: {
@@ -60,104 +132,6 @@ const Blog = () => {
             },
         ],
        
-        blogPosts: [
-            {
-                id: 1,
-                image: "https://afrikahayat.org/wp-content/uploads/2023/12/cambodia-student-reads-class.jpg",
-                alt: "STEM Classroom",
-                category: "STEM Education",
-                categoryId: "stem",
-                title: "Building STEM Capacity in Tanzania's Secondary Schools",
-                content:
-                    "Tanzania's future depends on developing strong STEM capabilities in its youth. This article explores the current challenges and opportunities in building robust STEM education programs across secondary schools in Tanzania.",
-                author: {
-                    name: "Dr. Rose E. Matete",
-                    initials: "RM",
-                    date: "November 10, 2022 · 6 min read",
-                },
-                reactions: {
-                    likes: 24,
-                    comments: 8,
-                },
-            },
-            {
-                id: 2,
-                image: "https://images.squarespace-cdn.com/content/v1/6037c51efd013540f2cb8756/1648654975736-FOIRDAT938BO8EKLTD3R/Milembe+girls+at+lab+slider.jpg?format=1000w",
-                alt: "School Laboratory",
-                category: "Laboratories",
-                categoryId: "laboratories",
-                title: "Designing Effective School Laboratories with Limited Resources",
-                content:
-                    "Practical laboratory experience is crucial for science education, but many Tanzanian schools face resource constraints. Learn how schools are creating innovative laboratory solutions with minimal resources.",
-                author: {
-                    name: "Dr. Ombeni W. Msuya",
-                    initials: "OW",
-                    date: "November 5, 2022 · 5 min read",
-                },
-                reactions: {
-                    likes: 18,
-                    comments: 5,
-                },
-            },
-            {
-                id: 3,
-                image: "https://staticsb.we.org/f/52095/1152x640/c29fe47cc4/tanzania-carousel-9.jpg",
-                alt: "Teacher Training",
-                category: "Teacher Training",
-                categoryId: "teacher",
-                title: "Empowering Science Teachers: Professional Development Approaches",
-                content:
-                    "Well-trained teachers are the backbone of effective science education. This article discusses modern approaches to professional development for science teachers in Tanzania's secondary schools.",
-                author: {
-                    name: "Dr. Abdallah J. Seni",
-                    initials: "AJ",
-                    date: "October 28, 2022 · 7 min read",
-                },
-                reactions: {
-                    likes: 32,
-                    comments: 12,
-                },
-            },
-            {
-                id: 4,
-                image:
-                    "https://lsi.fsu.edu/sites/g/files/upcbnu1926/files/2024-04/IMGP2617-2.jpg",
-                alt: "Community Education",
-                category: "Community Engagement",
-                categoryId: "community",
-                title: "Engaging Parents and Communities in STEM Education",
-                content:
-                    "Community involvement is essential for sustainable education improvement. Discover effective strategies for engaging parents and community members in supporting STEM education initiatives in Tanzania.",
-                author: {
-                    name: "Christopher Emily",
-                    initials: "CE",
-                    date: "October 21, 2022 · 9 min read",
-                },
-                reactions: {
-                    likes: 27,
-                    comments: 9,
-                },
-            },
-            {
-                id: 5,
-                image: "https://africa.unwomen.org/sites/default/files/2023-05/IMG_0329%20%281%29_1.JPG",
-                alt: "Women in Science",
-                category: "STEM Education",
-                categoryId: "stem",
-                title: "Breaking Barriers: Increasing Female Participation in STEM Fields",
-                content:
-                    "Gender disparities persist in STEM fields across Tanzania. This article explores innovative approaches to encourage more female students to pursue science and mathematics education.",
-                author: {
-                    name: "Andrew Keha Kuko",
-                    initials: "AK",
-                    date: "October 14, 2022 · 8 min read",
-                },
-                reactions: {
-                    likes: 41,
-                    comments: 16,
-                },
-            },
-        ],
         pagination: {
             pages: [1, 2, 3],
             currentPage: 1,
@@ -174,32 +148,6 @@ const Blog = () => {
            
             popularArticles: {
                 title: "Popular Articles",
-                articles: [
-                    {
-                        image: "https://www.maishahuru.com/img/1%20(7).jpg",
-                        alt: "Science",
-                        title: "The Future of STEM Education in Tanzania",
-                        views: "3,256 views",
-                    },
-                    {
-                        image: "https://www.maishahuru.com/img/1%20(7).jpg",
-                        alt: "Technology",
-                        title: "Digital Tools for Science Education",
-                        views: "2,841 views",
-                    },
-                    {
-                        image:  "https://www.maishahuru.com/img/1%20(7).jpg",
-                        alt: "Mathematics",
-                        title: "Making Mathematics Relevant in Daily Life",
-                        views: "2,547 views",
-                    },
-                    {
-                        image:  "https://www.maishahuru.com/img/1%20(7).jpg",
-                        alt: "Education",
-                        title: "Community Support for Science Education",
-                        views: "2,103 views",
-                    },
-                ],
             },
             tags: {
                 title: "Popular Tags",
@@ -261,6 +209,16 @@ const Blog = () => {
 
     const [activeCategory, setActiveCategory] = useState("all");
     const [subscribedState, setSubscribedState] = useState(false);
+    const [activeCommentPostId, setActiveCommentPostId] = useState(null);
+    const [postComments, setPostComments] = useState(STATIC_COMMENTS);
+    const [newComment, setNewComment] = useState({
+      name: "",
+      email: "",
+      content: "",
+    });
+    const [commentLikes, setCommentLikes] = useState({});
+   
+   
     const [formState, setFormState] = useState({
         name: "",
         email: "",
@@ -268,21 +226,24 @@ const Blog = () => {
         submitted: false,
     });
     const [reactionStates, setReactionStates] = useState(
-        CONTENT.blogPosts.reduce((acc, post) => {
+        postData.reduce((acc, post) => {
             acc[`post-${post.id}-like`] = false;
             acc[`post-${post.id}-comment`] = false;
             return acc;
         }, {})
     );
-    const [commentLikes, setCommentLikes] = useState(
-        CONTENT.comments.existing.reduce((acc, comment, index) => {
-            acc[`comment-${index}`] = false;
-            comment.replies.forEach((_, replyIndex) => {
-                acc[`comment-${index}-reply-${replyIndex}`] = false;
-            });
-            return acc;
-        }, {})
-    );
+    // const [commentLikes, setCommentLikes] = useState(
+    //     CONTENT.comments.existing.reduce((acc, comment, index) => {
+    //         acc[`comment-${index}`] = false;
+    //         comment.replies.forEach((_, replyIndex) => {
+    //             acc[`comment-${index}-reply-${replyIndex}`] = false;
+    //         });
+    //         return acc;
+    //     }, {})
+    // );
+    const [formData, setFormData] = useState({
+        email: "",
+    });
 
     const handleReactionClick = (key) => {
         setReactionStates((prev) => ({
@@ -316,15 +277,165 @@ const Blog = () => {
     };
 
 
-    const handleSubscribe = (e) => {
+   async function handleSubscribe (e){
         e.preventDefault();
-        setSubscribedState(true);
+
+  
+        const res = await fetch("api/subscribe", {
+          method: "post",
+          body: JSON.stringify(formData),
+        });
+    
+        const data = await res.json();
+
+if (data.success) {
+            setSubscribedState(true);
+      
+        setFormData({ email: "" });
+        setTimeout(() => {
+            setSubscribedState(false);
+        }, 5000);
+    }
+    else {
+        // console.error("Subscription failed:", data.message);
+    }
     };
 
 
-    const filteredPosts = CONTENT.blogPosts.filter(
-        (post) => activeCategory === "all" || post.categoryId === activeCategory
+    const filteredPosts = postData.filter(
+        (post) => activeCategory === "all" || post.category.id === activeCategory
     );
+
+
+
+
+    useEffect(() => {
+        const likesState = {};
+        
+        Object.entries(postComments).forEach(([postId, comments]) => {
+          comments.forEach((comment) => {
+            likesState[`post-${postId}-comment-${comment.id}`] = false;
+            
+            comment.replies.forEach((reply) => {
+              likesState[`post-${postId}-comment-${comment.id}-reply-${reply.id}`] = false;
+            });
+          });
+        });
+        
+        setCommentLikes({...commentLikes, ...likesState});
+      }, [postComments]);
+
+      const handleCommentClick = (postId) => {
+        setActiveCommentPostId(activeCommentPostId === postId ? null : postId);
+      };
+
+      const handleNewCommentSubmit = (e, postId) => {
+        e.preventDefault();
+        
+        if (!newComment.name || !newComment.content) {
+          return; // Basic validation
+        }
+        
+        const newCommentObj = {
+          id: postComments[postId] ? postComments[postId].length + 1 : 1,
+          author: newComment.name,
+          initials: newComment.name.split(' ').map(n => n[0]).join(''),
+          time: "Just now",
+          content: newComment.content,
+          likes: 0,
+          replies: [],
+        };
+        
+        setPostComments((prev) => ({
+          ...prev,
+          [postId]: prev[postId] ? [...prev[postId], newCommentObj] : [newCommentObj],
+        }));
+        
+        // Reset form
+        setNewComment({
+          name: "",
+          email: "",
+          content: "",
+        });
+      };
+
+      const [replyForm, setReplyForm] = useState({
+        postId: null,
+        commentId: null,
+        name: "",
+        email: "",
+        content: "",
+      });
+
+      const [showReplyForm, setShowReplyForm] = useState({
+        postId: null,
+        commentId: null,
+      });
+
+      const handleReplyClick = (postId, commentId) => {
+        setShowReplyForm({
+          postId,
+          commentId,
+        });
+        setReplyForm({
+          ...replyForm,
+          postId,
+          commentId,
+        });
+      };
+      
+
+
+  const handleReplySubmit = (e) => {
+    e.preventDefault();
+    
+    if (!replyForm.name || !replyForm.content) {
+      return; // Basic validation
+    }
+    
+    const { postId, commentId } = replyForm;
+    
+    const newReply = {
+      id: postComments[postId].find(c => c.id === commentId).replies.length + 1,
+      author: replyForm.name,
+      initials: replyForm.name.split(' ').map(n => n[0]).join(''),
+      time: "Just now",
+      content: replyForm.content,
+      likes: 0,
+    };
+    
+    setPostComments((prev) => {
+      const updatedComments = [...prev[postId]];
+      const commentIndex = updatedComments.findIndex(c => c.id === commentId);
+      
+      if (commentIndex !== -1) {
+        updatedComments[commentIndex] = {
+          ...updatedComments[commentIndex],
+          replies: [...updatedComments[commentIndex].replies, newReply],
+        };
+      }
+      
+      return {
+        ...prev,
+        [postId]: updatedComments,
+      };
+    });
+    
+ 
+    setReplyForm({
+      postId: null,
+      commentId: null,
+      name: "",
+      email: "",
+      content: "",
+    });
+    setShowReplyForm({
+      postId: null,
+      commentId: null,
+    });
+  };
+
+
 
     return (
         <>
@@ -466,7 +577,7 @@ const Blog = () => {
 
                                 {/* Filter Categories */}
                                 <div className="flex flex-wrap gap-2 mb-8">
-                                    {CONTENT.categories.map((category) => (
+                                    {categoryData.map((category) => (
                                         <button
                                             key={category.id}
                                             onClick={() => setActiveCategory(category.id)}
@@ -483,89 +594,250 @@ const Blog = () => {
 
                             {/* Blog Posts */}
                             <div className="space-y-10">
-                                {filteredPosts.map((post) => (
-                                    <motion.div
-                                        key={post.id}
-                                        className="bg-white rounded-xl overflow-hidden shadow-md blog-card"
-                                        initial={{ opacity: 0, y: 20 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        transition={{ duration: 0.5 }}
-                                    >
-                                        <img
-                                            src={post.image}
-                                            alt={post.alt}
-                                            className="w-full max-h-auto object-cover object-center"
-                                        />
-                                        <div className="p-6">
-                                            <div className="flex items-center mb-2">
-                                                <span
-                                                    className="px-3 py-1 rounded-full text-xs font-semibold"
-                                                    style={{ backgroundColor: "#0066CC", color: "white" }}
-                                                >
-                                                    {post.category}
-                                                </span>
-                                            </div>
-                                            <h3
-                                                className="text-xl font-bold mb-3"
-                                                style={{ color: "#0066CC" }}
-                                            >
-                                                {post.title}
-                                            </h3>
-                                            <p className="text-gray-600 mb-4">{post.content}</p>
+        {filteredPosts.map((post) => (
+          <motion.div
+            key={post.id}
+            className="bg-white rounded-xl overflow-hidden shadow-md blog-card"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <img
+              src={post.image}
+              alt={post.alt}
+              className="w-full max-h-auto object-cover object-center"
+            />
+            <div className="p-6">
+              {/* Post content */}
+              <div className="flex items-center mb-2">
+                <span
+                  className="px-3 py-1 rounded-full text-xs font-semibold"
+                  style={{ backgroundColor: "#0066CC", color: "white" }}
+                >
+                  {post.category.name}
+                </span>
+              </div>
+              <h3
+                className="text-xl font-bold mb-3"
+                style={{ color: "#0066CC" }}
+              >
+                {post.title}
+              </h3>
+              <p className="text-gray-600 mb-4">{post.content}</p>
 
-                                            <div className="flex items-center justify-between mt-6">
-                                                <div className="flex items-center">
-                                                    <div className="w-10 h-10 rounded-full mr-3 bg-gray-300 flex items-center justify-center">
-                                                        <span className="text-gray-600 font-bold">
-                                                            {post.author.initials}
-                                                        </span>
-                                                    </div>
-                                                    <div>
-                                                        <p className="font-medium text-gray-800">
-                                                            {post.author.name}
-                                                        </p>
-                                                        <p className="text-sm text-gray-500">
-                                                            {post.author.date}
-                                                        </p>
-                                                    </div>
-                                                </div>
+              <div className="flex items-center justify-between mt-6">
+                <div className="flex items-center">
+                  <div className="w-10 h-10 rounded-full mr-3 bg-gray-300 flex items-center justify-center">
+                    <span className="text-gray-600 font-bold">
+                      {post.author.initials}
+                    </span>
+                  </div>
+                  <div>
+                    <p className="font-medium text-gray-800">
+                      {post.author.name}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      {post.author.date}
+                    </p>
+                  </div>
+                </div>
 
-                                                <div className="flex space-x-3">
-                                                    <button
-                                                        className={`reaction-btn ${reactionStates[`post-${post.id}-like`]
-                                                                ? "text-blue-600"
-                                                                : "text-gray-500"
-                                                            }`}
-                                                        onClick={() =>
-                                                            handleReactionClick(`post-${post.id}-like`)
-                                                        }
-                                                    >
-                                                        <i className="far fa-thumbs-up"></i>
-                                                        <span className="ml-1">{post.reactions.likes}</span>
-                                                    </button>
-                                                    <button
-                                                        className={`reaction-btn ${reactionStates[`post-${post.id}-comment`]
-                                                                ? "text-blue-600"
-                                                                : "text-gray-500"
-                                                            }`}
-                                                        onClick={() =>
-                                                            handleReactionClick(`post-${post.id}-comment`)
-                                                        }
-                                                    >
-                                                        <i className="far fa-comment"></i>
-                                                        <span className="ml-1">
-                                                            {post.reactions.comments}
-                                                        </span>
-                                                    </button>
-                                                    <button className="share-btn text-gray-500">
-                                                        <i className="fas fa-share-alt"></i>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </motion.div>
-                                ))}
+                <div className="flex space-x-3">
+                  <button
+                    className="reaction-btn text-gray-500 hover:text-blue-600"
+                    onClick={() => handleReactionClick(`post-${post.id}-like`)}
+                  >
+                    <i className={`${reactionStates[`post-${post.id}-like`] ? "fas" : "far"} fa-thumbs-up`}></i>
+                    <span className="ml-1">{post.reactions.likes}</span>
+                  </button>
+                  <button
+                    className={`reaction-btn ${activeCommentPostId === post.id ? "text-blue-600" : "text-gray-500 hover:text-blue-600"}`}
+                    onClick={() => handleCommentClick(post.id)}
+                  >
+                    <i className={`${activeCommentPostId === post.id ? "fas" : "far"} fa-comment`}></i>
+                    <span className="ml-1">
+                      {(postComments[post.id]?.length || 0)}
+                    </span>
+                  </button>
+                  <button className="share-btn text-gray-500 hover:text-blue-600">
+                    <i className="fas fa-share-alt"></i>
+                  </button>
+                </div>
+              </div>
+
+              {/* Post Comments Section - only shown when activeCommentPostId matches this post */}
+              {activeCommentPostId === post.id && (
+                <div className="mt-6 pt-6 border-t border-gray-200">
+                  <h4 className="text-lg font-bold mb-4">Comments</h4>
+                  
+                  {/* Comments list */}
+                  <div className="space-y-4 mb-6">
+                    {postComments[post.id] && postComments[post.id].length > 0 ? (
+                      postComments[post.id].map((comment) => (
+                        <div key={comment.id} className="bg-gray-50 p-4 rounded-lg">
+                          <div className="flex items-start space-x-4">
+                            <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center flex-shrink-0">
+                              <span className="text-gray-600 font-bold">
+                                {comment.initials}
+                              </span>
                             </div>
+                            <div className="flex-1">
+                              <div className="flex items-center justify-between">
+                                <h5 className="font-bold text-gray-800">
+                                  {comment.author}
+                                </h5>
+                                <p className="text-xs text-gray-500">{comment.time}</p>
+                              </div>
+                              <p className="text-gray-700 mt-1">{comment.content}</p>
+
+                              <div className="mt-2 flex items-center space-x-4">
+                                <button 
+                                  className="text-xs text-gray-500 hover:text-blue-600 transition"
+                                  onClick={() => handleReplyClick(post.id, comment.id)}
+                                >
+                                  Reply
+                                </button>
+                                <button
+                                  className={`text-xs ${commentLikes[`post-${post.id}-comment-${comment.id}`] ? "text-blue-600" : "text-gray-500 hover:text-blue-600"}`}
+                                  onClick={() => handleCommentLike(`post-${post.id}-comment-${comment.id}`)}
+                                >
+                                  <i className={`${commentLikes[`post-${post.id}-comment-${comment.id}`] ? "fas" : "far"} fa-thumbs-up`}></i>
+                                  <span className="ml-1">{comment.likes}</span>
+                                </button>
+                              </div>
+
+                              {/* Reply form for this comment */}
+                              {showReplyForm.postId === post.id && 
+                               showReplyForm.commentId === comment.id && (
+                                <form className="mt-3 pl-4" onSubmit={handleReplySubmit}>
+                                  <div className="grid grid-cols-2 gap-2 mb-2">
+                                    <input
+                                      type="text"
+                                      placeholder="Your name"
+                                      className="px-3 py-1 border rounded text-sm"
+                                      value={replyForm.name}
+                                      onChange={(e) => setReplyForm({...replyForm, name: e.target.value})}
+                                    />
+                                    <input
+                                      type="email"
+                                      placeholder="Your email"
+                                      className="px-3 py-1 border rounded text-sm"
+                                      value={replyForm.email}
+                                      onChange={(e) => setReplyForm({...replyForm, email: e.target.value})}
+                                    />
+                                  </div>
+                                  <textarea
+                                    placeholder="Your reply"
+                                    className="w-full px-3 py-1 border rounded text-sm mb-2"
+                                    rows="2"
+                                    value={replyForm.content}
+                                    onChange={(e) => setReplyForm({...replyForm, content: e.target.value})}
+                                  ></textarea>
+                                  <div className="flex justify-end">
+                                    <button
+                                      type="submit"
+                                      className="bg-blue-600 text-white px-3 py-1 rounded text-xs"
+                                    >
+                                      Post Reply
+                                    </button>
+                                  </div>
+                                </form>
+                              )}
+
+                              {/* Replies to this comment */}
+                              {comment.replies.length > 0 && (
+                                <div className="mt-3 space-y-3 pl-4 border-l-2 border-gray-200">
+                                  {comment.replies.map((reply) => (
+                                    <div key={reply.id} className="pt-2">
+                                      <div className="flex items-start space-x-3">
+                                        <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center flex-shrink-0">
+                                          <span className="text-gray-600 font-bold text-xs">
+                                            {reply.initials}
+                                          </span>
+                                        </div>
+                                        <div>
+                                          <div className="flex items-center justify-between">
+                                            <h6 className="font-bold text-gray-800 text-sm">
+                                              {reply.author}
+                                            </h6>
+                                            <p className="text-xs text-gray-500">{reply.time}</p>
+                                          </div>
+                                          <p className="text-gray-700 text-sm mt-1">{reply.content}</p>
+                                          
+                                          <button
+                                            className={`text-xs mt-1 ${commentLikes[`post-${post.id}-comment-${comment.id}-reply-${reply.id}`] ? "text-blue-600" : "text-gray-500 hover:text-blue-600"}`}
+                                            onClick={() => handleCommentLike(`post-${post.id}-comment-${comment.id}-reply-${reply.id}`)}
+                                          >
+                                            <i className={`${commentLikes[`post-${post.id}-comment-${comment.id}-reply-${reply.id}`] ? "fas" : "far"} fa-thumbs-up`}></i>
+                                            <span className="ml-1">{reply.likes}</span>
+                                          </button>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-gray-500 text-center py-4">No comments yet. Be the first to comment!</p>
+                    )}
+                  </div>
+                  
+                  {/* New comment form */}
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <h5 className="font-bold text-gray-800 mb-3">Leave a comment</h5>
+                    <form onSubmit={(e) => handleNewCommentSubmit(e, post.id)}>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                          <input
+                            type="text"
+                            placeholder="Your name*"
+                            className="w-full px-3 py-2 border rounded"
+                            value={newComment.name}
+                            onChange={(e) => setNewComment({...newComment, name: e.target.value})}
+                            required
+                          />
+                        </div>
+                        <div>
+                          <input
+                            type="email"
+                            placeholder="Your email"
+                            className="w-full px-3 py-2 border rounded"
+                            value={newComment.email}
+                            onChange={(e) => setNewComment({...newComment, email: e.target.value})}
+                          />
+                        </div>
+                      </div>
+                      <textarea
+                        placeholder="Your comment*"
+                        className="w-full px-3 py-2 border rounded mb-4"
+                        rows="3"
+                        value={newComment.content}
+                        onChange={(e) => setNewComment({...newComment, content: e.target.value})}
+                        required
+                      ></textarea>
+                      <div className="flex justify-end">
+                        <motion.button
+                          type="submit"
+                          className="px-4 py-2 rounded-lg text-white font-medium"
+                          style={{ backgroundColor: "#0066CC" }}
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                        >
+                          Post Comment
+                        </motion.button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              )}
+            </div>
+          </motion.div>
+        ))}
+      </div>
 
                             {/* Pagination */}
                             <div className="mt-12 flex justify-center">
@@ -621,6 +893,10 @@ const Blog = () => {
                                         <div>
                                             <input
                                                 type="email"
+                                                value={formData.email}
+                                                onChange={(e) =>
+                                                    setFormData({ ...formData, email: e.target.value })
+                                                }
                                                 placeholder={CONTENT.sidebar.newsletter.placeholder}
                                                 className="w-full px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400"
                                             />
@@ -653,7 +929,7 @@ const Blog = () => {
                                     </h3>
 
                                     <div className="space-y-4">
-                                        {CONTENT.sidebar.popularArticles.articles.map(
+                                        {popularArticles.map(
                                             (article, index) => (
                                                 <motion.div
                                                     key={index}
