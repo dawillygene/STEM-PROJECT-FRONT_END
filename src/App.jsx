@@ -8,7 +8,7 @@ import Gallery from './pages/Gallery';
 import Team from './pages/Team';
 import About from './pages/About';
 import NotFound from './pages/NotFound';
-import BlogTest from './pages/BlogTest';
+
 
 function App() {
   return (
