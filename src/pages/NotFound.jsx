@@ -29,18 +29,9 @@ const NotFound = () => {
   };
 
   useEffect(() => {
-    // Set document title when component mounts
     document.title = '404 - Page Not Found | STEM in Dodoma University';
-    
-    // Optional: Track the 404 error in analytics
-    // if (window.gtag) {
-    //   window.gtag('event', '404_error', {
-    //     'page_path': window.location.pathname
-    //   });
-    // }
   }, []);
 
-  // Handle the back button click
   const handleGoBack = () => {
     navigate(-1);
   };
@@ -48,7 +39,6 @@ const NotFound = () => {
   return (
     <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gray-50">
       <div className="max-w-3xl w-full space-y-12">
-        {/* Logo and 404 Text */}
         <motion.div 
           className="flex flex-col items-center"
           initial={{ y: -50, opacity: 0 }}
@@ -85,7 +75,6 @@ const NotFound = () => {
           </motion.div>
         </motion.div>
         
-        {/* Animated Astronaut Illustration */}
         <motion.div 
           className="flex justify-center"
           initial={{ scale: 0, opacity: 0 }}
@@ -93,8 +82,6 @@ const NotFound = () => {
           transition={{ delay: 0.9, duration: 0.7, type: 'spring' }}
         >
           <div className="w-64 h-64 relative">
-            {/* This is where you would normally put an SVG illustration */}
-            {/* For this example, let's create a simple animated 404 graphic */}
             <div className="relative h-full w-full">
               <motion.div 
                 className="absolute inset-0 bg-gradient-to-br from-[#0066CC] to-[#004d99] opacity-10 rounded-full"
@@ -123,7 +110,6 @@ const NotFound = () => {
                 </div>
               </motion.div>
               
-              {/* Orbiting circles */}
               {[...Array(3)].map((_, i) => (
                 <motion.div 
                   key={i}
@@ -151,14 +137,12 @@ const NotFound = () => {
           </div>
         </motion.div>
         
-        {/* Navigation Links */}
         <motion.div 
           className="flex flex-col space-y-6"
           initial={{ y: 50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 1.2, duration: 0.5 }}
         >
-          {/* Action buttons */}
           <div className="flex flex-wrap justify-center gap-4">
             <motion.button
               onClick={handleGoBack}
@@ -197,7 +181,6 @@ const NotFound = () => {
             </motion.div>
           </div>
           
-          {/* Suggested links */}
           <div className="mt-8 text-center">
             <h3 className="text-lg font-medium text-gray-600 mb-4">{CONTENT.suggestions.title}</h3>
             <div className="flex flex-wrap justify-center gap-3">
@@ -218,15 +201,16 @@ const NotFound = () => {
             </div>
           </div>
         </motion.div>
-        
-        {/* Footer note */}
-        <motion.div 
+          <motion.div 
           className="text-center text-gray-500 text-sm"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.5, duration: 0.5 }}
         >
-          If you believe this is an error, please <Link to="/contact" className="text-[#0066CC] hover:text-[#FFAD03] underline">contact our support team</Link>.
+          If you believe this is an error, please 
+          <Link to="/contact" className="text-[#0066CC] hover:text-[#FFAD03] underline">
+          contact our support team
+          </Link>.
         </motion.div>
       </div>
     </div>

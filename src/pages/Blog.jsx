@@ -86,6 +86,15 @@ const Blog = () => {
   const handleSubscribe = useCallback(
     async (e) => {
       e.preventDefault();
+
+      // Basic client-side email validation
+      const emailRegex = /^\S+@\S+\.\S+$/;
+      if (!emailRegex.test(formData.email)) {
+        // Optionally, set an error state here to display to the user
+        console.error("Invalid email format");
+        return; 
+      }
+
       setIsSubscribing(true);
       try {
         const res = await fetch("api/subscribe", {
@@ -112,6 +121,10 @@ const Blog = () => {
   );
 
   const handleCommentSubmit = useCallback(() => {
+    // TODO: Implement actual comment submission to a backend.
+    // SECURITY: When implementing, ensure robust server-side validation and sanitization
+    // of all fields (name, email, comment) to prevent XSS, SQL injection, etc.
+    // Also, implement CSRF protection for the submission endpoint.
     setFormState(prev => ({ ...prev, submitted: true }));
     setTimeout(() => setFormState({ name: "", email: "", comment: "", submitted: false }), 2000);
   }, []);
@@ -160,7 +173,11 @@ const Blog = () => {
     </div>
   );
 
-  if (error) return <div className="text-center py-10 text-red-600">Error: {error}</div>;
+  if (error) return (
+    <div className="text-center py-10 text-red-600">
+      Error: An unexpected error occurred while fetching blog content. Please try again later.
+    </div>
+  );
 
   return (
     <>

@@ -9,7 +9,6 @@ const Home = () => {
   return (
   <>
   <Hero />
-
   <section id="activities" className="py-16 bg-white">
       <div className="container mx-auto px-6">
         <h2 className="text-3xl font-bold text-primary mb-12 section-heading">
@@ -28,7 +27,6 @@ const Home = () => {
         </div>
       </div>
     </section>
-
     <section id="outcomes" className="py-16 bg-gray-100">
       <div className="container mx-auto px-6">
         <h2 className="text-3xl font-bold text-primary mb-12 section-heading">
@@ -51,9 +49,6 @@ const Home = () => {
         </div>
       </div>
     </section>
-
-
-
     <section className="py-16  bg-white ">
         <div className="container mx-auto px-6">
             <h2 className="text-3xl font-bold text-primary mb-12 section-heading">Project Monitoring and Evaluation</h2>
@@ -63,7 +58,6 @@ const Home = () => {
             </div>
         </div>
     </section>
-
     <section className="py-16  bg-gray-100">
     <div className="container mx-auto px-6">
             <h2 className="text-3xl font-bold text-primary mb-8 section-heading">Ethical Concerns</h2>

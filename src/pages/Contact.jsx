@@ -20,7 +20,6 @@ const Contact = () => {
         </motion.h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-          {/* Contact Form */}
           <motion.div
             className="bg-gray-50 p-8 rounded-lg shadow-custom"
             initial={{ x: -50, opacity: 0 }}
@@ -66,7 +65,6 @@ const Contact = () => {
             </form>
           </motion.div>
 
-          {/* Contact Information */}
           <motion.div
             className="bg-gray-50 p-8 rounded-lg shadow-custom"
             initial={{ x: 50, opacity: 0 }}
@@ -123,7 +121,6 @@ const Contact = () => {
   );
 };
 
-// Helper data arrays
 const contactItems = [
   {
     icon: 'map-marker-alt',
@@ -148,10 +145,12 @@ const contactItems = [
 ];
 
 const socialLinks = [
+
   { icon: 'facebook-f' },
   { icon: 'twitter' },
   { icon: 'instagram' },
   { icon: 'linkedin-in' }
+
 ];
 
 export default Contact;

@@ -102,7 +102,6 @@ const Gallery = () => {
     }
   ];
 
-  // Filter categories
   const categories = [
     { id: 'all', label: 'All' },
     { id: 'campus', label: 'Campus Life' },
@@ -112,14 +111,12 @@ const Gallery = () => {
     { id: 'community', label: 'Community Engagement' }
   ];
 
-  // Filter handler
   const filteredItems = activeFilter === 'all' 
     ? galleryData 
     : galleryData.filter(item => item.category.includes(activeFilter));
 
   return (
     <div>
-      {/* Header Section */}
       <header className="bg-white py-8">
         <div className="container mx-auto px-4">
           <h1 className="text-4xl font-bold text-primary">Gallery</h1>
@@ -137,7 +134,6 @@ const Gallery = () => {
         </div>
       </header>
 
-      {/* Gallery Section */}
       <section className="py-12 bg-gray-50">
         <div className="container mx-auto px-4">
           {/* Filters */}
@@ -157,7 +153,6 @@ const Gallery = () => {
             ))}
           </div>
 
-          {/* Gallery Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredItems.map(item => (
               <GalleryItem key={item.id} item={item} />
@@ -169,9 +164,7 @@ const Gallery = () => {
   );
 };
 
-// Gallery Item Component
 const GalleryItem = ({ item }) => {
-  // Determine tag colors
   const getTagColor = (tag) => {
     switch(tag) {
       case 'Campus Life': return '#0066CC';
