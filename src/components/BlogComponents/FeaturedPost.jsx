@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 
 const FeaturedPost = ({ post }) => {
+
   return (
     <motion.div
       className="bg-white rounded-xl overflow-hidden shadow-lg max-w-5xl mx-auto mb-16 blog-card hover:shadow-xl transition-shadow"

@@ -29,8 +29,8 @@ const Footer = () => {
   // Text content constants
   const CONTENT = {
     university: {
-      name: "STEM University of Dodoma",
-      shortName: "UDOM",
+      name: "STEM EDUCATION",
+      shortName: "STEM EDU",
       description: "Enhancing Mathematics and Science Education in Secondary Schools in Tanzania - A partnership program with MoEST sponsored by UNICEF."
     },
     quickLinks: {
@@ -67,7 +67,7 @@ const Footer = () => {
       email: "info@stemdodoma.edu"
     },
     legal: {
-      copyright: "© {year} The University of Dodoma. All rights reserved.",
+      copyright: "© {year} STEM EDUCATION. All rights reserved.",
       links: [
         { to: "/privacy-policy", label: "Privacy Policy" },
         { to: "/terms-of-service", label: "Terms of Service" },

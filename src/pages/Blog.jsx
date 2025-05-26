@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { motion } from "framer-motion";
 import Search from "../components/Search/SearchWithDropdown";
-import STATIC_COMMENTS from "../constants/Comments";
 import BLOG_DATA from "../constants/blogData";
 import CONTENT from "../constants/content";
 import FeaturedPost from "../components/BlogComponents/FeaturedPost";
@@ -17,7 +16,7 @@ const Blog = () => {
   const [subscribedState, setSubscribedState] = useState(false);
   const [formData, setFormData] = useState({ email: "" });
   const [activeCommentPostId, setActiveCommentPostId] = useState(null);
-  const [postComments, setPostComments] = useState(STATIC_COMMENTS);
+  const [postComments, setPostComments] = useState({});
   const [commentLikes, setCommentLikes] = useState({});
   const [formState, setFormState] = useState({ name: "", email: "", comment: "", submitted: false });
   const [loading, setLoading] = useState(true);
@@ -119,16 +118,6 @@ const Blog = () => {
     },
     [formData]
   );
-
-  const handleCommentSubmit = useCallback(() => {
-    // TODO: Implement actual comment submission to a backend.
-    // SECURITY: When implementing, ensure robust server-side validation and sanitization
-    // of all fields (name, email, comment) to prevent XSS, SQL injection, etc.
-    // Also, implement CSRF protection for the submission endpoint.
-    setFormState(prev => ({ ...prev, submitted: true }));
-    setTimeout(() => setFormState({ name: "", email: "", comment: "", submitted: false }), 2000);
-  }, []);
-
   const handleCommentLike = useCallback((key) => {
     setCommentLikes(prev => ({ ...prev, [key]: !prev[key] }));
   }, []);

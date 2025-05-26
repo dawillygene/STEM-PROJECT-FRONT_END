@@ -139,9 +139,9 @@ const Header = () => {
           
           <div className="ml-3 flex flex-col">
             <Link to="/" className="text-white font-bold text-xl md:text-2xl tracking-tight">
-              STEM IN DODOMA
+              STEM EDUCATION
             </Link>
-            <span className="text-white text-opacity-80 text-sm font-medium">UNIVERSITY</span>
+            <span className="text-white text-opacity-80 text-sm font-medium">TANZANIA</span>
           </div>
         </motion.div>
 
