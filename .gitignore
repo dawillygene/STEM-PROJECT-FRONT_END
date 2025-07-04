@@ -22,3 +22,29 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Documentation and tracking files (per Copilot rules)
+checklist.md
+progress.md
+api_docs/
+docs/
+*.test.js
+*.spec.js
+test/
+tests/
+coverage/
+.nyc_output/
+
+# Environment and sensitive files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Temporary files
+*.tmp
+*.temp
+README-draft.md
+design-notes.md
+progress-tracker.md
