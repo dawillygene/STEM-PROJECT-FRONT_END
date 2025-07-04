@@ -377,6 +377,91 @@ class AboutService {
   }
 
   /**
+   * Export about content in specified format
+   * @param {string} format - Export format (json, pdf, excel, etc.)
+   * @param {Object} options - Export options
+   * @returns {Promise<Blob|Object>} Exported content
+   */
+  async exportContent(format = 'json', options = {}) {
+    try {
+      const queryString = new URLSearchParams();
+      queryString.append('format', format);
+      
+      if (options.sections) {
+        queryString.append('sections', options.sections.join(','));
+      }
+      if (options.includeMetadata !== undefined) {
+        queryString.append('includeMetadata', options.includeMetadata);
+      }
+      if (options.dateRange) {
+        queryString.append('dateRange', options.dateRange);
+      }
+
+      const response = await API.get(`/about-content/export?${queryString.toString()}`);
+      
+      if (format === 'json') {
+        return await response.json();
+      } else {
+        // For other formats, return as blob
+        return await response.blob();
+      }
+    } catch (error) {
+      console.error(`Error exporting content in ${format} format:`, error);
+      throw error;
+    }
+  }
+
+  /**
+   * Search about content
+   * @param {string} query - Search query
+   * @param {Object} options - Search options
+   * @param {string[]} options.sections - Sections to search in
+   * @param {boolean} options.includeMetadata - Include metadata in results
+   * @param {number} options.limit - Maximum number of results
+   * @param {boolean} useCache - Whether to use cache (default: true)
+   * @returns {Promise<Object>} Search results
+   */
+  async searchContent(query, options = {}, useCache = true) {
+    const cacheKey = `search-${query}-${JSON.stringify(options)}`;
+    
+    // Check cache first unless explicitly disabled
+    if (useCache) {
+      const cachedData = contentCache.get(cacheKey);
+      if (cachedData) {
+        return cachedData;
+      }
+    }
+
+    try {
+      const queryString = new URLSearchParams();
+      queryString.append('q', query);
+      
+      if (options.sections) {
+        queryString.append('sections', options.sections.join(','));
+      }
+      if (options.includeMetadata !== undefined) {
+        queryString.append('includeMetadata', options.includeMetadata);
+      }
+      if (options.limit) {
+        queryString.append('limit', options.limit);
+      }
+
+      const response = await API.get(`/about-content/search?${queryString.toString()}`);
+      const data = await response.json();
+      
+      // Cache the result for 10 minutes (shorter cache time for search)
+      if (data.success) {
+        contentCache.set(cacheKey, data, 10 * 60 * 1000); // 10 minutes
+      }
+      
+      return data;
+    } catch (error) {
+      console.error('Error searching content:', error);
+      throw error;
+    }
+  }
+
+  /**
    * Clear cache for about content
    * @param {string} section - Specific section to clear (optional)
    */

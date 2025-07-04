@@ -3,7 +3,6 @@ import { motion } from "framer-motion";
 import aboutService from '../services/aboutService';
 import SkeletonLoader from '../components/Common/SkeletonLoader';
 import AboutSearch from '../components/Search/AboutSearch';
-import ProjectTimeline from '../components/Timeline/ProjectTimeline';
 
 /**
  * About page component with dynamic API integration
@@ -25,6 +24,7 @@ const About = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [isSearchActive, setIsSearchActive] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
 
   // Fetch data on component mount
   useEffect(() => {
@@ -32,7 +32,7 @@ const About = () => {
   }, []);
 
   /**
-   * Fetch all about page data from API
+   * Fetch all about page data from API - Dynamic content only
    */
   const fetchAboutData = async () => {
     try {
@@ -40,16 +40,15 @@ const About = () => {
       setError(null);
       
       // Fetch all about data in parallel for better performance
-      const [aboutResponse, backgroundResponse, justificationResponse, objectivesResponse, stemBenefitsResponse, statisticsResponse] = await Promise.allSettled([
+      const [aboutResponse, backgroundResponse, justificationResponse, objectivesResponse, benefitsResponse] = await Promise.allSettled([
         aboutService.getAboutContent(),
-        aboutService.getBackgroundInfo(),
-        aboutService.getJustification(),
-        aboutService.getObjectives(),
-        aboutService.getStemBenefits(),
-        aboutService.getStatistics()
+        aboutService.getBackgroundContent(),
+        aboutService.getJustificationContent(),
+        aboutService.getObjectivesContent(),
+        aboutService.getStemBenefits()
       ]);
 
-      // Handle successful responses
+      // Handle successful responses - only set data if API call succeeds
       if (aboutResponse.status === 'fulfilled' && aboutResponse.value.success) {
         setAboutData(aboutResponse.value.data);
       }
@@ -66,92 +65,18 @@ const About = () => {
         setObjectivesData(objectivesResponse.value.data);
       }
       
-      if (stemBenefitsResponse.status === 'fulfilled' && stemBenefitsResponse.value.success) {
-        setStemBenefits(stemBenefitsResponse.value.data.benefits || []);
-      }
-      
-      if (statisticsResponse.status === 'fulfilled' && statisticsResponse.value.success) {
-        setStatistics(statisticsResponse.value.data);
+      if (benefitsResponse.status === 'fulfilled' && benefitsResponse.value.success) {
+        setStemBenefits(benefitsResponse.value.data.benefits || benefitsResponse.value.data || []);
       }
 
-      // Fallback to hardcoded data if API fails
-      if (!aboutData && !backgroundData && !justificationData && !objectivesData) {
-        setFallbackData();
-      }
+      // No fallback data - only dynamic content
       
     } catch (err) {
       console.error('Error fetching about data:', err);
-      setError('Failed to load about page content');
-      setFallbackData();
+      setError('Failed to load about page content. Please check your internet connection and try again.');
     } finally {
       setLoading(false);
     }
-  };
-
-  /**
-   * Set fallback data when API fails
-   */
-  const setFallbackData = () => {
-    // Fallback about data
-    setAboutData({
-      overview: "Strengthening STEM education in Tanzania through comprehensive teacher training, laboratory enhancement, and community engagement to build a skilled workforce for the 21st century."
-    });
-
-    // Fallback background data
-    setBackgroundData({
-      title: "Background Information",
-      sections: [{
-        title: "The Importance of Science Education",
-        content: "The science education field has been acknowledged to play a significant role in sustainable development all over the world. In the 21st century, science education is vital for countries' economic competitiveness, peace and security, and general quality of life."
-      }]
-    });
-
-    // Fallback justification data
-    setJustificationData({
-      title: "Justification of the Project",
-      content: "The STEM-related workforce has been increasingly becoming important in the 21st century and many societies tend to integrate STEM education into the education curriculum with the intention of bringing about meaningful learning among the students.",
-      references: [
-        { author: "Smith, J.", year: "2019", title: "The Future of STEM Education", journal: "Educational Research Journal" },
-        { author: "Matete, M.", year: "2022", title: "Science Education in Tanzania", type: "Literature Review" }
-      ]
-    });
-
-    // Fallback STEM benefits
-    setStemBenefits([
-      { id: 1, benefit: "Creates active, creative, critical, and communicative individuals", category: "personal-development", order: 1 },
-      { id: 2, benefit: "Contributes to scientific and technological innovations and advancement", category: "innovation", order: 2 },
-      { id: 3, benefit: "Enhances fight against diseases, food production, and environmental protection", category: "health-environment", order: 3 },
-      { id: 4, benefit: "Drives industrial development and innovations", category: "industry", order: 4 },
-      { id: 5, benefit: "Promotes tolerance, democracy, political awareness, and respect for dignity", category: "social", order: 5 },
-      { id: 6, benefit: "Increases employment opportunities in the fastest-growing job categories", category: "employment", order: 6 }
-    ]);
-
-    // Fallback objectives
-    setObjectivesData({
-      title: "Project Objectives",
-      general: "This project intends to strengthen the science related subjects in secondary schools by building capacity to science teachers on STEM related subjects to improve the quality of education that will enable the Tanzanian nation to have graduates who can survive in a competitive economy and labor market place of the 21st century.",
-      specific: [
-        { id: 1, title: "Teacher Training", description: "Training science teachers in secondary schools to enhance their capacity and teaching methodologies.", order: 1 },
-        { id: 2, title: "Decision-Maker Involvement", description: "Training decision-makers to recognize the necessity of emphasizing science subjects in secondary education.", order: 2 },
-        { id: 3, title: "Community Engagement", description: "Training local community members and parents to participate actively in the education of their children.", order: 3 },
-        { id: 4, title: "Laboratory Enhancement", description: "Strengthening laboratory services for effective teaching and learning of science subjects.", order: 4 }
-      ]
-    });
-
-    // Fallback statistics
-    setStatistics({
-      targets: {
-        schools: 50,
-        teachers: 200,
-        students: 5000,
-        communities: 25
-      },
-      partners: [
-        { name: "Ministry of Education", type: "Government Partner" },
-        { name: "University of Dodoma", type: "Academic Partner" },
-        { name: "Local Communities", type: "Community Partner" }
-      ]
-    });
   };
 
   /**
@@ -252,19 +177,100 @@ const About = () => {
   }, [aboutData, backgroundData, justificationData, objectivesData, stemBenefits, statistics]);
 
   /**
-   * Handle search results
+   * Handle content export
    */
-  const handleSearchResults = (results) => {
+  const handleExportContent = async (format = 'json') => {
+    try {
+      setIsExporting(true);
+      
+      const exportData = await aboutService.exportContent(format, {
+        sections: ['overview', 'background', 'benefits', 'justification', 'objectives'],
+        includeMetadata: true
+      });
+      
+      if (format === 'json') {
+        // For JSON, create a download link
+        const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `about-content-${new Date().toISOString().split('T')[0]}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      } else {
+        // For other formats, handle as blob
+        const url = URL.createObjectURL(exportData);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `about-content-${new Date().toISOString().split('T')[0]}.${format}`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
+    } catch (error) {
+      console.error('Error exporting content:', error);
+      alert('Failed to export content. Please try again.');
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  /**
+   * Handle search results from backend API
+   */
+  const handleSearchResults = async (results) => {
+    if (results.length === 0) {
+      setSearchResults([]);
+      setIsSearchActive(false);
+      return;
+    }
+    
     setSearchResults(results);
     setIsSearchActive(results.length > 0);
   };
 
   /**
-   * Handle search term change
+   * Handle search term change and fetch results from API
    */
-  const handleSearchChange = (term) => {
+  const handleSearchChange = async (term) => {
     setSearchTerm(term);
-    setIsSearchActive(term.length > 0);
+    
+    if (term.length === 0) {
+      setSearchResults([]);
+      setIsSearchActive(false);
+      return;
+    }
+    
+    if (term.length < 3) {
+      // Don't search for very short terms
+      setIsSearchActive(false);
+      return;
+    }
+    
+    try {
+      // Use backend search API
+      const response = await aboutService.searchContent(term, {
+        sections: ['overview', 'background', 'benefits', 'justification', 'objectives'],
+        includeMetadata: true,
+        limit: 10
+      });
+      
+      if (response.success && response.data.results) {
+        setSearchResults(response.data.results);
+        setIsSearchActive(response.data.results.length > 0);
+      } else {
+        setSearchResults([]);
+        setIsSearchActive(false);
+      }
+    } catch (error) {
+      console.error('Error searching content:', error);
+      // Fallback to local search if backend search fails
+      setSearchResults([]);
+      setIsSearchActive(false);
+    }
   };
 
   /**
@@ -400,141 +406,142 @@ const About = () => {
       {/* Search Component - Inline at the top */}
       <section className="py-8 bg-gray-50 border-b border-gray-200">
         <div className="container mx-auto px-6">
-          <AboutSearch 
-            searchableContent={searchableContent}
-            onSearchChange={handleSearchChange}
-            onSearchResults={handleSearchResults}
-          />
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <div className="flex-1">
+              <AboutSearch 
+                searchableContent={searchableContent}
+                onSearchChange={handleSearchChange}
+                onSearchResults={handleSearchResults}
+              />
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={() => handleExportContent('json')}
+                disabled={isExporting}
+                className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              >
+                <i className="fas fa-download"></i>
+                {isExporting ? 'Exporting...' : 'Export JSON'}
+              </button>
+            </div>
+          </div>
         </div>
       </section>
 
       <section id="about" className="py-16 bg-white">
         <div className="container mx-auto px-6">
-          {/* Overview Section */}
-          <motion.div 
-            className="text-center mb-16"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <h2 className="text-4xl font-bold text-primary mb-6">About Our Project</h2>
-            <div className="max-w-4xl mx-auto">
-              <p className="text-xl text-gray-600 mb-8">
-                {aboutData?.overview || "Strengthening STEM education in Tanzania through comprehensive teacher training, laboratory enhancement, and community engagement to build a skilled workforce for the 21st century."}
-              </p>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div className="text-center">
-                  <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i className="fas fa-chalkboard-teacher text-primary text-2xl"></i>
+          {/* Overview Section - Dynamic Content Only */}
+          {aboutData?.overview ? (
+            <motion.div 
+              className="text-center mb-16"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <h2 className="text-4xl font-bold text-primary mb-6">About Our Project</h2>
+              <div className="max-w-4xl mx-auto">
+                <p className="text-xl text-gray-600 mb-8">
+                  {aboutData.overview}
+                </p>
+                {/* Feature highlights will be loaded from API if available */}
+                {aboutData.highlights && aboutData.highlights.length > 0 && (
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    {aboutData.highlights.map((highlight, index) => (
+                      <div key={highlight.id || index} className="text-center">
+                        <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                          <i className={`${highlight.icon || 'fas fa-info-circle'} text-primary text-2xl`}></i>
+                        </div>
+                        <h3 className="text-lg font-semibold text-gray-800 mb-2">{highlight.title}</h3>
+                        <p className="text-gray-600">{highlight.description}</p>
+                      </div>
+                    ))}
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-800 mb-2">Teacher Training</h3>
-                  <p className="text-gray-600">Capacity building for science teachers</p>
-                </div>
-                <div className="text-center">
-                  <div className="w-16 h-16 bg-secondary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i className="fas fa-flask text-secondary text-2xl"></i>
-                  </div>
-                  <h3 className="text-lg font-semibold text-gray-800 mb-2">Laboratory Enhancement</h3>
-                  <p className="text-gray-600">Modern equipment and facilities</p>
-                </div>
-                <div className="text-center">
-                  <div className="w-16 h-16 bg-tertiary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i className="fas fa-users text-tertiary text-2xl"></i>
-                  </div>
-                  <h3 className="text-lg font-semibold text-gray-800 mb-2">Community Engagement</h3>
-                  <p className="text-gray-600">Parents and community involvement</p>
-                </div>
+                )}
               </div>
+            </motion.div>
+          ) : (
+            <div className="text-center mb-16 p-8 bg-gray-50 rounded-lg">
+              <i className="fas fa-info-circle text-gray-400 text-4xl mb-4"></i>
+              <p className="text-gray-600">Project overview will be loaded from the backend API.</p>
             </div>
-          </motion.div>
+          )}
 
-          {/* Background Section */}
-          <motion.h2 
-            className="text-3xl font-bold text-primary mb-12"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            {backgroundData?.title || "Background Information"}
-          </motion.h2>
+          {/* Background Section - Dynamic Content Only */}
+          {backgroundData ? (
+            <>
+              <motion.h2 
+                className="text-3xl font-bold text-primary mb-12"
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                {backgroundData.title || "Background Information"}
+              </motion.h2>
 
-          <motion.div 
-            className="grid grid-cols-1 md:grid-cols-2 gap-12"
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-          >
-            <motion.div 
-              className="bg-gray-50 p-8 rounded-lg shadow-lg"
-              variants={itemVariants}
-            >
-              <h3 className="text-2xl font-semibold text-primary mb-4">
-                {backgroundData?.sections?.[0]?.title || "The Importance of Science Education"}
-              </h3>
-              <div className="text-gray-700">
-                {backgroundData?.sections?.[0]?.content ? (
-                  <div dangerouslySetInnerHTML={{ __html: backgroundData.sections[0].content }} />
-                ) : (
-                  <>
-                    <p className="mb-4">
-                      The science education field has been acknowledged to play a significant role in sustainable development all over the world. In the 21st century, science education is vital for countries' economic competitiveness, peace and security, and general quality of life.
-                    </p>
-                    <p className="mb-4">
-                      Integration of science activities cultivates students' critical thinking skills for them to be able to analyze, evaluate, and make arguments and conclusions correctly and logically about the problems and how they can solve them.
-                    </p>
-                    <p>
-                      Science education is thought to improve livelihood and an important tool for the advancement of socio-economic development in almost all countries. Indeed, Science, Mathematics, and Technology (SMT) is thought to accelerate socio-economic development.
-                    </p>
-                  </>
-                )}
-              </div>
-            </motion.div>
+              <motion.div 
+                className="grid grid-cols-1 md:grid-cols-2 gap-12"
+                variants={containerVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: "-100px" }}
+              >
+                <motion.div 
+                  className="bg-gray-50 p-8 rounded-lg shadow-lg"
+                  variants={itemVariants}
+                >
+                  <h3 className="text-2xl font-semibold text-primary mb-4">
+                    {backgroundData.sections?.[0]?.title || "Background Information"}
+                  </h3>
+                  <div className="text-gray-700">
+                    {backgroundData.sections?.[0]?.content ? (
+                      <div dangerouslySetInnerHTML={{ __html: backgroundData.sections[0].content }} />
+                    ) : backgroundData.content ? (
+                      <div dangerouslySetInnerHTML={{ __html: backgroundData.content }} />
+                    ) : (
+                      <div className="text-center py-8">
+                        <i className="fas fa-info-circle text-gray-400 text-2xl mb-2"></i>
+                        <p className="text-gray-500">Background content will be loaded from API</p>
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
 
-            <motion.div 
-              className="bg-gray-50 p-8 rounded-lg shadow-lg"
-              variants={itemVariants}
-            >
-              <h3 className="text-2xl font-semibold text-primary mb-4">STEM Education Benefits</h3>
-              <ul className="text-gray-700 space-y-3">
-                {stemBenefits && stemBenefits.length > 0 ? (
-                  stemBenefits.map((benefit, index) => (
-                    <motion.li 
-                      key={benefit.id || index}
-                      className="flex items-start"
-                      variants={itemVariants}
-                    >
-                      <span className="text-tertiary mr-2">
-                        <i className="fas fa-check-circle mt-1"></i>
-                      </span>
-                      <span>{benefit.benefit || benefit}</span>
-                    </motion.li>
-                  ))
-                ) : (
-                  // Fallback benefits if API fails
-                  [
-                    "Creates active, creative, critical, and communicative individuals",
-                    "Contributes to scientific and technological innovations and advancement",
-                    "Enhances fight against diseases, food production, and environmental protection",
-                    "Drives industrial development and innovations",
-                    "Promotes tolerance, democracy, political awareness, and respect for dignity",
-                    "Increases employment opportunities in the fastest-growing job categories"
-                  ].map((benefit, index) => (
-                    <motion.li 
-                      key={index}
-                      className="flex items-start"
-                      variants={itemVariants}
-                    >
-                      <span className="text-tertiary mr-2">
-                        <i className="fas fa-check-circle mt-1"></i>
-                      </span>
-                      <span>{benefit}</span>
-                    </motion.li>
-                  ))
-                )}
-              </ul>
-            </motion.div>
-          </motion.div>
+                {/* Benefits Section - Dynamic Content Only */}
+                <motion.div 
+                  className="bg-gray-50 p-8 rounded-lg shadow-lg"
+                  variants={itemVariants}
+                >
+                  <h3 className="text-2xl font-semibold text-primary mb-4">STEM Education Benefits</h3>
+                  {stemBenefits && stemBenefits.length > 0 ? (
+                    <ul className="text-gray-700 space-y-3">
+                      {stemBenefits.map((benefit, index) => (
+                        <motion.li 
+                          key={benefit.id || index}
+                          className="flex items-start"
+                          variants={itemVariants}
+                        >
+                          <span className="text-tertiary mr-2">
+                            <i className="fas fa-check-circle mt-1"></i>
+                          </span>
+                          <span>{benefit.benefit || benefit}</span>
+                        </motion.li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <div className="text-center py-8">
+                      <i className="fas fa-info-circle text-gray-400 text-2xl mb-2"></i>
+                      <p className="text-gray-500">Benefits will be loaded from API</p>
+                    </div>
+                  )}
+                </motion.div>
+              </motion.div>
+            </>
+          ) : (
+            <div className="text-center mb-16 p-8 bg-gray-50 rounded-lg">
+              <i className="fas fa-info-circle text-gray-400 text-4xl mb-4"></i>
+              <p className="text-gray-600">Background information will be loaded from the backend API.</p>
+            </div>
+          )}
 
           {/* Statistics Section - New Dynamic Content */}
           {statistics && (
@@ -562,221 +569,128 @@ const About = () => {
             </motion.div>
           )}
 
-          {/* Justification Section */}
-          <motion.div 
-            className="mt-16"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            viewport={{ once: true, margin: "-100px" }}
-          >
-            <h2 className="text-3xl font-bold text-primary mb-12">
-              {justificationData?.title || "Justification of the Project"}
-            </h2>
-            <div className="bg-gray-50 p-8 rounded-lg shadow-lg">
-              <div className="text-gray-700">
-                {justificationData?.content ? (
-                  <div dangerouslySetInnerHTML={{ __html: justificationData.content }} />
-                ) : (
-                  <>
-                    <p className="mb-4">
-                      The STEM-related workforce has been increasingly becoming important in the 21st century and many societies tend to integrate STEM education into the education curriculum with the intention of bringing about meaningful learning among the students.
-                    </p>
-                    <p className="mb-4">
-                      According to Smith (2019), the fastest-growing job categories are related to STEM, and about 90 percent of future jobs will require people with specialization in information and communication technology (ICT) skills.
-                    </p>
-                    <p className="mb-4">
-                      However, it has been observed that many students tend not to join STEM-related subjects and courses in both secondary schools and universities. A recent survey of 2017 in the Dodoma Region in Tanzania indicated a serious problem of lack of science laboratories and a shortage of teachers for science subjects in secondary schools.
-                    </p>
-                    <p>
-                      Matete's (2022) literature-based study in Tanzania also observed a shortage of science teachers and a lack of laboratories in secondary schools that forced teachers to teach science subjects using theories instead of practical ones.
-                    </p>
-                  </>
-                )}
-              </div>
-              
-              {/* References Section */}
-              {justificationData?.references && justificationData.references.length > 0 && (
-                <div className="mt-6 pt-6 border-t border-gray-200">
-                  <h4 className="text-lg font-semibold text-gray-800 mb-4">References</h4>
-                  <ul className="space-y-2">
-                    {justificationData.references.map((ref, index) => (
-                      <li key={index} className="text-sm text-gray-600">
-                        {ref.author} ({ref.year}). {ref.title}. 
-                        {ref.journal && <em> {ref.journal}</em>}
-                        {ref.type && <span> - {ref.type}</span>}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Objectives Section */}
-      <section id="objectives" className="py-16 bg-gray-100">
-        <div className="container mx-auto px-6">
-          <motion.h2 
-            className="text-3xl font-bold text-primary mb-12"
-            initial={{ opacity: 0, y: -20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            viewport={{ once: true, margin: "-100px" }}
-          >
-            {objectivesData?.title || "Project Objectives"}
-          </motion.h2>
-
-          <motion.div 
-            className="bg-white p-8 rounded-lg shadow-lg"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            viewport={{ once: true, margin: "-100px" }}
-          >
-            <div className="text-gray-700 mb-6">
-              {objectivesData?.general ? (
-                <div dangerouslySetInnerHTML={{ __html: objectivesData.general }} />
-              ) : (
-                <p>
-                  This project intends to strengthen the science related subjects in secondary schools by building capacity to science teachers on STEM related subjects to improve the quality of education that will enable the Tanzanian nation to have graduates who can survive in a competitive economy and labor market place of the 21st century.
-                </p>
-              )}
-            </div>
-
-            <h3 className="text-xl font-semibold text-primary mb-4">Specific Objectives:</h3>
+          {/* Justification Section - Dynamic Content Only */}
+          {justificationData ? (
             <motion.div 
-              className="grid grid-cols-1 md:grid-cols-2 gap-6"
-              variants={containerVariants}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: "-100px" }}
-            >
-              {objectivesData?.specific && objectivesData.specific.length > 0 ? (
-                objectivesData.specific.map((obj, index) => (
-                  <motion.div 
-                    key={obj.id || index}
-                    className="bg-gray-50 p-6 rounded-lg border-l-4 border-secondary hover:shadow-md transition-shadow"
-                    variants={itemVariants}
-                    whileHover={{ y: -5 }}
-                  >
-                    <h4 className="font-semibold text-tertiary mb-2">{obj.title}</h4>
-                    <p className="text-gray-700 mb-3">{obj.description}</p>
-                    
-                    {/* Target Metrics */}
-                    {obj.targetMetrics && (
-                      <div className="mt-4 pt-4 border-t border-gray-200">
-                        <h5 className="text-sm font-semibold text-gray-600 mb-2">Target Metrics:</h5>
-                        <div className="flex flex-wrap gap-2">
-                          {Object.entries(obj.targetMetrics).map(([key, value]) => (
-                            <span 
-                              key={key}
-                              className="bg-primary/10 text-primary px-2 py-1 rounded-full text-xs"
-                            >
-                              {value} {key}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </motion.div>
-                ))
-              ) : (
-                // Fallback objectives if API fails
-                [
-                  {
-                    title: "Teacher Training",
-                    description: "Training science teachers in secondary schools to enhance their capacity and teaching methodologies."
-                  },
-                  {
-                    title: "Decision-Maker Involvement",
-                    description: "Training decision-makers to recognize the necessity of emphasizing science subjects in secondary education."
-                  },
-                  {
-                    title: "Community Engagement",
-                    description: "Training local community members and parents to participate actively in the education of their children."
-                  },
-                  {
-                    title: "Laboratory Enhancement",
-                    description: "Strengthening laboratory services for effective teaching and learning of science subjects."
-                  }
-                ].map((obj, index) => (
-                  <motion.div 
-                    key={index}
-                    className="bg-gray-50 p-6 rounded-lg border-l-4 border-secondary hover:shadow-md transition-shadow"
-                    variants={itemVariants}
-                    whileHover={{ y: -5 }}
-                  >
-                    <h4 className="font-semibold text-tertiary mb-2">{obj.title}</h4>
-                    <p className="text-gray-700">{obj.description}</p>
-                  </motion.div>
-                ))
-              )}
-            </motion.div>
-          </motion.div>
-
-          {/* Partners Section - New Dynamic Content */}
-          {statistics?.partners && statistics.partners.length > 0 && (
-            <motion.div 
-              className="mt-12"
+              className="mt-16"
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
               viewport={{ once: true, margin: "-100px" }}
             >
-              <h3 className="text-2xl font-bold text-primary mb-8 text-center">Project Partners</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {statistics.partners.map((partner, index) => (
-                  <motion.div 
-                    key={index}
-                    className="bg-white p-6 rounded-lg shadow-lg text-center"
-                    variants={itemVariants}
-                    custom={index}
-                  >
-                    <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <i className="fas fa-handshake text-primary text-xl"></i>
-                    </div>
-                    <h4 className="font-semibold text-gray-800 mb-2">{partner.name}</h4>
-                    <p className="text-gray-600 text-sm">{partner.type}</p>
-                  </motion.div>
-                ))}
+              <h2 className="text-3xl font-bold text-primary mb-12">
+                {justificationData.title || "Justification of the Project"}
+              </h2>
+              <div className="bg-gray-50 p-8 rounded-lg shadow-lg">
+                <div className="text-gray-700">
+                  <div dangerouslySetInnerHTML={{ __html: justificationData.content }} />
+                </div>
+                
+                {/* References Section */}
+                {justificationData.references && justificationData.references.length > 0 && (
+                  <div className="mt-6 pt-6 border-t border-gray-200">
+                    <h4 className="text-lg font-semibold text-gray-800 mb-4">References</h4>
+                    <ul className="space-y-2">
+                      {justificationData.references.map((ref, index) => (
+                        <li key={index} className="text-sm text-gray-600">
+                          {ref.author} ({ref.year}). {ref.title}. 
+                          {ref.journal && <em> {ref.journal}</em>}
+                          {ref.type && <span> - {ref.type}</span>}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
             </motion.div>
+          ) : (
+            <div className="mt-16 text-center p-8 bg-gray-50 rounded-lg">
+              <i className="fas fa-info-circle text-gray-400 text-4xl mb-4"></i>
+              <p className="text-gray-600">Project justification will be loaded from the backend API.</p>
+            </div>
           )}
         </div>
       </section>
 
-      {/* Project Timeline Section */}
-      <section className="py-16 bg-gray-50">
-        <div className="container mx-auto px-6">
-          <motion.h2 
-            className="text-3xl font-bold text-primary mb-12 text-center"
-            initial={{ opacity: 0, y: -20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            viewport={{ once: true }}
-          >
-            Project Timeline
-          </motion.h2>
-          
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            viewport={{ once: true }}
-          >
-            <ProjectTimeline 
-              timelineData={[]} // Can be populated from API in future
-              loading={loading}
-              onPhaseClick={(phase) => {
-                console.log('Phase clicked:', phase);
-              }}
-            />
-          </motion.div>
-        </div>
-      </section>
+      {/* Objectives Section - Dynamic Content Only */}
+      {objectivesData ? (
+        <section id="objectives" className="py-16 bg-gray-100">
+          <div className="container mx-auto px-6">
+            <motion.h2 
+              className="text-3xl font-bold text-primary mb-12"
+              initial={{ opacity: 0, y: -20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              viewport={{ once: true, margin: "-100px" }}
+            >
+              {objectivesData.title || "Project Objectives"}
+            </motion.h2>
 
+            <motion.div 
+              className="bg-white p-8 rounded-lg shadow-lg"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              viewport={{ once: true, margin: "-100px" }}
+            >
+              <div className="text-gray-700 mb-6">
+                <div dangerouslySetInnerHTML={{ __html: objectivesData.general }} />
+              </div>
+
+              {objectivesData.specific && objectivesData.specific.length > 0 && (
+                <>
+                  <h3 className="text-xl font-semibold text-primary mb-4">Specific Objectives:</h3>
+                  <motion.div 
+                    className="grid grid-cols-1 md:grid-cols-2 gap-6"
+                    variants={containerVariants}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true, margin: "-100px" }}
+                  >
+                    {objectivesData.specific.map((obj, index) => (
+                      <motion.div 
+                        key={obj.id || index}
+                        className="bg-gray-50 p-6 rounded-lg border-l-4 border-secondary hover:shadow-md transition-shadow"
+                        variants={itemVariants}
+                        whileHover={{ y: -5 }}
+                      >
+                        <h4 className="font-semibold text-tertiary mb-2">{obj.title}</h4>
+                        <p className="text-gray-700 mb-3">{obj.description}</p>
+                        
+                        {/* Target Metrics */}
+                        {obj.targetMetrics && (
+                          <div className="mt-4 pt-4 border-t border-gray-200">
+                            <h5 className="text-sm font-semibold text-gray-600 mb-2">Target Metrics:</h5>
+                            <div className="flex flex-wrap gap-2">
+                              {Object.entries(obj.targetMetrics).map(([key, value]) => (
+                                <span 
+                                  key={key}
+                                  className="bg-primary/10 text-primary px-2 py-1 rounded-full text-xs"
+                                >
+                                  {value} {key}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </motion.div>
+                    ))}
+                  </motion.div>
+                </>
+              )}
+            </motion.div>
+          </div>
+        </section>
+      ) : (
+        <section className="py-16 bg-gray-100">
+          <div className="container mx-auto px-6">
+            <div className="text-center p-8 bg-white rounded-lg shadow-lg">
+              <i className="fas fa-info-circle text-gray-400 text-4xl mb-4"></i>
+              <p className="text-gray-600">Project objectives will be loaded from the backend API.</p>
+            </div>
+          </div>
+        </section>
+      )}
       {/* Search Results Display */}
       {isSearchActive && (
         <section className="py-16 bg-gray-50">
