@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import aboutService from '../services/aboutService';
 
 /**
- * About page component - Display dynamic content from backend APIs
+ * Professional About Page Component - Redesigned with modern UI/UX
  * 
  * API Documentation: http://192.168.1.150:8000/api/about-content
  * GET /about-content → All content
@@ -17,6 +17,23 @@ import aboutService from '../services/aboutService';
  * @author Elia William Mariki (@dawillygene)
  * @date July 4, 2025
  */
+
+// Animation variants for smooth transitions
+const fadeInUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0 }
+};
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
+};
+
 const About = () => {
   // State management for API data
   const [aboutContent, setAboutContent] = useState(null);
@@ -60,336 +77,461 @@ const About = () => {
     fetchAboutContent();
   };
 
-  // Loading state
+  // Loading state with modern spinner
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading content from backend API...</p>
+          <div className="relative">
+            <div className="w-16 h-16 border-4 border-gray-200 border-t-primary rounded-full animate-spin mx-auto mb-6"></div>
+            <div className="absolute inset-0 w-16 h-16 border-4 border-transparent border-t-secondary rounded-full animate-spin mx-auto" style={{ animationDuration: '1.5s' }}></div>
+          </div>
+          <h3 className="text-xl font-semibold text-primary mb-2">Loading Content</h3>
+          <p className="text-gray-600">Fetching data from backend API...</p>
         </div>
       </div>
     );
   }
 
-  // Error state
+  // Error state with modern design
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="max-w-md mx-auto text-center">
-          <div className="bg-white rounded-xl shadow-lg p-8">
-            <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
-              <i className="fas fa-exclamation-triangle text-2xl text-red-500"></i>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4">
+        <motion.div 
+          className="max-w-md w-full"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
+            <div className="w-20 h-20 bg-gradient-to-br from-red-100 to-red-200 rounded-full flex items-center justify-center mx-auto mb-6">
+              <i className="fas fa-exclamation-triangle text-3xl text-red-600"></i>
             </div>
-            <h3 className="text-xl font-bold text-gray-800 mb-2">Unable to Load Content</h3>
-            <p className="text-gray-600 mb-6">{error}</p>
+            <h3 className="text-2xl font-bold text-gray-800 mb-3">Unable to Load Content</h3>
+            <p className="text-gray-600 mb-8 leading-relaxed">{error}</p>
             <button
               onClick={handleRetry}
-              className="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary/90 transition-colors"
+              className="bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-white px-8 py-3 rounded-full font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg"
             >
               <i className="fas fa-redo mr-2"></i>
               Try Again
             </button>
           </div>
-        </div>
+        </motion.div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
+      {/* Hero Section */}
+      <section className="relative overflow-hidden bg-gradient-to-r from-primary via-primary/95 to-primary/90 text-white">
+        <div className="absolute inset-0 bg-black/10"></div>
+        <div className="relative container mx-auto px-4 py-20 sm:px-6 lg:px-8">
+          <motion.div
+            className="text-center max-w-4xl mx-auto"
+            initial="hidden"
+            animate="visible"
+            variants={fadeInUp}
+            transition={{ duration: 0.8 }}
+          >
+            <h1 className="text-5xl sm:text-6xl font-bold mb-6 leading-tight">
+              About Our <span className="text-secondary">STEM</span> Initiative
+            </h1>
+            <p className="text-xl sm:text-2xl text-blue-100 leading-relaxed">
+              Empowering the next generation through innovative Science, Technology, Engineering, and Mathematics education
+            </p>
+          </motion.div>
+        </div>
+        <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-white to-transparent"></div>
+      </section>
+
       {/* Background Section */}
       {aboutContent?.background && (
-        <section className="py-16 bg-white">
-          <div className="container mx-auto px-6">
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-            >
-              <h2 className="text-4xl font-bold text-primary mb-8 text-center section-heading">
-                {aboutContent.background.title}
-              </h2>
-              
-              <div className="max-w-6xl mx-auto mb-12">
-                <div className="bg-white p-8 rounded-lg shadow-custom">
-                  <div 
-                    className="text-lg text-gray-700 leading-relaxed"
-                    dangerouslySetInnerHTML={{ __html: aboutContent.background.mainContent }}
-                  />
-                </div>
-              </div>
-
-              {/* Background Sections */}
-              {aboutContent.background.sections && aboutContent.background.sections.length > 0 && (
-                <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                  {aboutContent.background.sections
-                    .sort((a, b) => a.displayOrder - b.displayOrder)
-                    .map((section, index) => (
-                      <motion.div
-                        key={section.id}
-                        className="bg-white p-6 rounded-lg shadow-custom border-l-4 border-secondary"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5, delay: index * 0.1 }}
-                      >
-                        <h3 className="text-xl font-semibold text-primary mb-4">
-                          {section.title}
-                        </h3>
-                        <div 
-                          className="text-gray-700"
-                          dangerouslySetInnerHTML={{ __html: section.content }}
-                        />
-                      </motion.div>
-                    ))}
-                </div>
-              )}
-
-              {/* Call to Action */}
-              {aboutContent.background.ctaText && aboutContent.background.ctaLink && (
-                <motion.div
-                  className="text-center"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.5 }}
-                >
-                  <a
-                    href={aboutContent.background.ctaLink}
-                    className="btn-primary px-8 py-3 rounded-lg inline-flex items-center gap-2 font-medium"
-                  >
-                    {aboutContent.background.ctaText}
-                    <i className="fas fa-arrow-right"></i>
-                  </a>
-                </motion.div>
-              )}
-            </motion.div>
-          </div>
-        </section>
+        <BackgroundSection background={aboutContent.background} />
       )}
 
       {/* Benefits Section */}
       {aboutContent?.benefits && aboutContent.benefits.length > 0 && (
-        <section className="py-16 bg-gray-100">
-          <div className="container mx-auto px-6">
-            <motion.h2
-              className="text-3xl font-bold text-primary mb-12 text-center section-heading"
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-            >
-              STEM Education Benefits
-            </motion.h2>
-
-            <div className="max-w-6xl mx-auto">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {aboutContent.benefits
-                  .filter(benefit => benefit.isActive)
-                  .sort((a, b) => a.displayOrder - b.displayOrder)
-                  .map((benefit, index) => (
-                    <motion.div
-                      key={benefit.id}
-                      className="bg-white p-6 rounded-lg shadow-custom hover:shadow-lg transition-shadow border-t-4 border-tertiary"
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.5, delay: index * 0.1 }}
-                    >
-                      <div className="flex items-center mb-4">
-                        <div className="w-12 h-12 bg-tertiary rounded-full flex items-center justify-center mr-4">
-                          <i className={`${benefit.icon} text-white text-lg`}></i>
-                        </div>
-                        <h3 className="text-lg font-semibold text-primary">
-                          {benefit.title}
-                        </h3>
-                      </div>
-                      <p className="text-gray-600 leading-relaxed">{benefit.description}</p>
-                    </motion.div>
-                  ))}
-              </div>
-            </div>
-          </div>
-        </section>
+        <BenefitsSection benefits={aboutContent.benefits} />
       )}
 
       {/* Justification Section */}
       {aboutContent?.justification && (
-        <section className="py-16 bg-white">
-          <div className="container mx-auto px-6">
-            <motion.h2
-              className="text-3xl font-bold text-primary mb-12 text-center section-heading"
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-            >
-              {aboutContent.justification.title}
-            </motion.h2>
-
-            <motion.div
-              className="max-w-6xl mx-auto"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-            >
-              <div className="bg-white p-8 rounded-lg shadow-custom border-l-4 border-primary mb-8">
-                <div 
-                  className="text-gray-700 leading-relaxed text-lg"
-                  dangerouslySetInnerHTML={{ __html: aboutContent.justification.content }}
-                />
-                
-                {aboutContent.justification.conclusion && (
-                  <div className="mt-8 pt-6 border-t border-gray-200 bg-gray-50 p-6 rounded-lg">
-                    <h4 className="text-lg font-semibold text-primary mb-3">Conclusion</h4>
-                    <div 
-                      className="text-gray-700"
-                      dangerouslySetInnerHTML={{ __html: aboutContent.justification.conclusion }}
-                    />
-                  </div>
-                )}
-              </div>
-
-              {/* References */}
-              {aboutContent.justification.references && aboutContent.justification.references.length > 0 && (
-                <div className="bg-white p-6 rounded-lg shadow-custom border-l-4 border-secondary">
-                  <h3 className="text-xl font-semibold text-primary mb-6">References</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {aboutContent.justification.references
-                      .sort((a, b) => a.displayOrder - b.displayOrder)
-                      .map((reference, index) => (
-                        <div key={reference.id} className="flex items-start p-4 bg-gray-50 rounded-lg">
-                          <span className="bg-secondary text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-medium mr-3 mt-1">
-                            {index + 1}
-                          </span>
-                          <div>
-                            <p className="text-gray-700 text-sm">
-                              <strong className="text-primary">{reference.author}</strong> ({reference.publicationDate}). 
-                              {reference.url ? (
-                                <a 
-                                  href={reference.url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="text-secondary hover:text-tertiary ml-1 font-medium"
-                                >
-                                  {reference.title}
-                                </a>
-                              ) : (
-                                <span className="ml-1">{reference.title}</span>
-                              )}
-                            </p>
-                          </div>
-                        </div>
-                      ))}
-                  </div>
-                </div>
-              )}
-            </motion.div>
-          </div>
-        </section>
+        <JustificationSection justification={aboutContent.justification} />
       )}
 
       {/* Objectives Section */}
       {aboutContent?.objectives && (
-        <section className="py-16 bg-gray-100">
-          <div className="container mx-auto px-6">
-            <motion.h2
-              className="text-3xl font-bold text-primary mb-12 text-center section-heading"
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-            >
-              {aboutContent.objectives.title}
-            </motion.h2>
-
-            <motion.div
-              className="max-w-6xl mx-auto"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-            >
-              <div className="bg-white p-8 rounded-lg shadow-custom border-l-4 border-tertiary mb-8">
-                <div 
-                  className="text-gray-700 leading-relaxed text-lg mb-8"
-                  dangerouslySetInnerHTML={{ __html: aboutContent.objectives.introduction }}
-                />
-
-                {/* Specific Objectives */}
-                {aboutContent.objectives.specificObjectives && aboutContent.objectives.specificObjectives.length > 0 && (
-                  <>
-                    <h3 className="text-xl font-semibold text-primary mb-6">Specific Objectives</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                      {aboutContent.objectives.specificObjectives
-                        .filter(obj => obj.isActive)
-                        .sort((a, b) => a.displayOrder - b.displayOrder)
-                        .map((objective, index) => (
-                          <motion.div
-                            key={objective.id}
-                            className="bg-gray-50 p-6 rounded-lg border-l-4 border-secondary hover:shadow-md transition-shadow"
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ duration: 0.5, delay: 0.3 + index * 0.1 }}
-                          >
-                            <div className="flex items-center mb-3">
-                              <div className="w-8 h-8 bg-secondary text-white rounded-full flex items-center justify-center text-sm font-bold mr-3">
-                                {index + 1}
-                              </div>
-                              <h4 className="font-semibold text-primary">
-                                {objective.title}
-                              </h4>
-                            </div>
-                            <p className="text-gray-700 leading-relaxed">{objective.description}</p>
-                          </motion.div>
-                        ))}
-                    </div>
-                  </>
-                )}
-
-                {aboutContent.objectives.conclusion && (
-                  <div className="pt-6 border-t border-gray-200 bg-gray-50 p-6 rounded-lg">
-                    <h4 className="text-lg font-semibold text-primary mb-3">Conclusion</h4>
-                    <div 
-                      className="text-gray-700"
-                      dangerouslySetInnerHTML={{ __html: aboutContent.objectives.conclusion }}
-                    />
-                  </div>
-                )}
-              </div>
-            </motion.div>
-          </div>
-        </section>
+        <ObjectivesSection objectives={aboutContent.objectives} />
       )}
 
       {/* Last Updated Info */}
       {aboutContent?.lastUpdated && (
-        <section className="py-6 bg-white border-t border-gray-200">
-          <div className="container mx-auto px-6">
-            <div className="text-center text-sm text-gray-500">
-              <i className="fas fa-clock mr-2 text-secondary"></i>
-              Last updated: {new Date(aboutContent.lastUpdated).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-              })}
-            </div>
-          </div>
-        </section>
+        <LastUpdatedSection lastUpdated={aboutContent.lastUpdated} />
       )}
 
       {/* No Content Message */}
       {!aboutContent && !loading && !error && (
-        <section className="py-16 bg-white">
-          <div className="container mx-auto px-6 text-center">
-            <div className="max-w-2xl mx-auto bg-gray-50 p-12 rounded-lg shadow-custom">
-              <i className="fas fa-info-circle text-secondary text-6xl mb-6"></i>
-              <h3 className="text-2xl font-bold text-primary mb-4">No Content Available</h3>
-              <p className="text-gray-600">
-                About content will be loaded from the backend API when available.
-              </p>
-            </div>
-          </div>
-        </section>
+        <NoContentSection />
       )}
     </div>
   );
 };
+
+// Background Section Component
+const BackgroundSection = ({ background }) => (
+  <section className="py-20 bg-white relative overflow-hidden">
+    <div className="absolute inset-0 bg-gradient-to-br from-blue-50/30 to-transparent"></div>
+    <div className="relative container mx-auto px-4 sm:px-6 lg:px-8">
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.3 }}
+        variants={staggerContainer}
+        className="max-w-7xl mx-auto"
+      >
+        <motion.div variants={fadeInUp} className="text-center mb-16">
+          <h2 className="text-4xl sm:text-5xl font-bold text-primary mb-6">
+            {background.title}
+          </h2>
+          <div className="w-24 h-1 bg-gradient-to-r from-secondary to-tertiary mx-auto mb-8"></div>
+        </motion.div>
+        
+        <motion.div variants={fadeInUp} className="mb-16">
+          <div className="bg-white rounded-2xl shadow-2xl p-8 sm:p-12 border border-gray-100 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-secondary/10 to-tertiary/10 rounded-full -mr-16 -mt-16"></div>
+            <div 
+              className="text-lg sm:text-xl text-gray-700 leading-relaxed relative z-10"
+              dangerouslySetInnerHTML={{ __html: background.mainContent }}
+            />
+          </div>
+        </motion.div>
+
+        {/* Background Sections */}
+        {background.sections && background.sections.length > 0 && (
+          <motion.div variants={fadeInUp} className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
+            {background.sections
+              .sort((a, b) => a.displayOrder - b.displayOrder)
+              .map((section, index) => (
+                <motion.div
+                  key={section.id}
+                  variants={fadeInUp}
+                  className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100"
+                >
+                  <div className="p-8 relative">
+                    <div className={`absolute top-0 left-0 w-full h-2 bg-gradient-to-r ${
+                      index % 2 === 0 ? 'from-secondary to-tertiary' : 'from-tertiary to-secondary'
+                    }`}></div>
+                    <h3 className="text-2xl font-bold text-primary mb-6 group-hover:text-primary/90 transition-colors">
+                      {section.title}
+                    </h3>
+                    <div 
+                      className="text-gray-700 leading-relaxed"
+                      dangerouslySetInnerHTML={{ __html: section.content }}
+                    />
+                  </div>
+                </motion.div>
+              ))}
+          </motion.div>
+        )}
+
+        {/* Call to Action */}
+        {background.ctaText && background.ctaLink && (
+          <motion.div variants={fadeInUp} className="text-center">
+            <a
+              href={background.ctaLink}
+              className="inline-flex items-center gap-3 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-white px-10 py-4 rounded-full font-semibold text-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+            >
+              {background.ctaText}
+              <i className="fas fa-arrow-right"></i>
+            </a>
+          </motion.div>
+        )}
+      </motion.div>
+    </div>
+  </section>
+);
+
+// Benefits Section Component
+const BenefitsSection = ({ benefits }) => (
+  <section className="py-20 bg-gradient-to-br from-gray-50 to-gray-100 relative overflow-hidden">
+    <div className="absolute inset-0 bg-gradient-to-br from-blue-50/20 to-orange-50/20"></div>
+    <div className="relative container mx-auto px-4 sm:px-6 lg:px-8">
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.3 }}
+        variants={staggerContainer}
+        className="max-w-7xl mx-auto"
+      >
+        <motion.div variants={fadeInUp} className="text-center mb-16">
+          <h2 className="text-4xl sm:text-5xl font-bold text-primary mb-6">
+            STEM Education Benefits
+          </h2>
+          <div className="w-24 h-1 bg-gradient-to-r from-secondary to-tertiary mx-auto mb-8"></div>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            Discover the transformative power of STEM education and its impact on future leaders
+          </p>
+        </motion.div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+          {benefits
+            .filter(benefit => benefit.isActive)
+            .sort((a, b) => a.displayOrder - b.displayOrder)
+            .map((benefit, index) => (
+              <motion.div
+                key={benefit.id}
+                variants={fadeInUp}
+                className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100"
+              >
+                <div className="p-8 relative">
+                  <div className={`absolute top-0 left-0 w-full h-2 bg-gradient-to-r ${
+                    index % 3 === 0 ? 'from-primary to-secondary' : 
+                    index % 3 === 1 ? 'from-secondary to-tertiary' : 
+                    'from-tertiary to-primary'
+                  }`}></div>
+                  <div className="flex items-center mb-6">
+                    <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mr-4 shadow-lg ${
+                      index % 3 === 0 ? 'bg-gradient-to-br from-primary to-primary/80' : 
+                      index % 3 === 1 ? 'bg-gradient-to-br from-secondary to-secondary/80' : 
+                      'bg-gradient-to-br from-tertiary to-tertiary/80'
+                    }`}>
+                      <i className={`${benefit.icon} text-white text-2xl`}></i>
+                    </div>
+                    <h3 className="text-xl font-bold text-primary group-hover:text-primary/90 transition-colors">
+                      {benefit.title}
+                    </h3>
+                  </div>
+                  <p className="text-gray-700 leading-relaxed">{benefit.description}</p>
+                </div>
+              </motion.div>
+            ))}
+        </div>
+      </motion.div>
+    </div>
+  </section>
+);
+
+// Justification Section Component
+const JustificationSection = ({ justification }) => (
+  <section className="py-20 bg-white relative overflow-hidden">
+    <div className="absolute inset-0 bg-gradient-to-br from-blue-50/30 to-transparent"></div>
+    <div className="relative container mx-auto px-4 sm:px-6 lg:px-8">
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.3 }}
+        variants={staggerContainer}
+        className="max-w-7xl mx-auto"
+      >
+        <motion.div variants={fadeInUp} className="text-center mb-16">
+          <h2 className="text-4xl sm:text-5xl font-bold text-primary mb-6">
+            {justification.title}
+          </h2>
+          <div className="w-24 h-1 bg-gradient-to-r from-secondary to-tertiary mx-auto mb-8"></div>
+        </motion.div>
+
+        <motion.div variants={fadeInUp} className="mb-16">
+          <div className="bg-white rounded-2xl shadow-2xl p-8 sm:p-12 border border-gray-100 relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-2 h-full bg-gradient-to-b from-primary to-secondary"></div>
+            <div 
+              className="text-lg sm:text-xl text-gray-700 leading-relaxed pl-8"
+              dangerouslySetInnerHTML={{ __html: justification.content }}
+            />
+            
+            {justification.conclusion && (
+              <div className="mt-12 pt-8 border-t border-gray-200 bg-gradient-to-br from-gray-50 to-gray-100 p-8 rounded-xl ml-8">
+                <h4 className="text-2xl font-bold text-primary mb-4 flex items-center">
+                  <i className="fas fa-lightbulb mr-3 text-secondary"></i>
+                  Conclusion
+                </h4>
+                <div 
+                  className="text-gray-700 leading-relaxed"
+                  dangerouslySetInnerHTML={{ __html: justification.conclusion }}
+                />
+              </div>
+            )}
+          </div>
+        </motion.div>
+
+        {/* References */}
+        {justification.references && justification.references.length > 0 && (
+          <motion.div variants={fadeInUp}>
+            <div className="bg-white rounded-2xl shadow-2xl p-8 sm:p-12 border border-gray-100 relative overflow-hidden">
+              <div className="absolute top-0 left-0 w-2 h-full bg-gradient-to-b from-secondary to-tertiary"></div>
+              <h3 className="text-3xl font-bold text-primary mb-8 pl-8 flex items-center">
+                <i className="fas fa-book-open mr-3 text-secondary"></i>
+                References
+              </h3>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pl-8">
+                {justification.references
+                  .sort((a, b) => a.displayOrder - b.displayOrder)
+                  .map((reference, index) => (
+                    <div key={reference.id} className="bg-gradient-to-br from-gray-50 to-gray-100 p-6 rounded-xl border border-gray-200 hover:shadow-lg transition-all duration-300">
+                      <div className="flex items-start">
+                        <div className="w-10 h-10 bg-gradient-to-br from-secondary to-tertiary text-white rounded-full flex items-center justify-center text-sm font-bold mr-4 mt-1 shadow-lg">
+                          {index + 1}
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-gray-700">
+                            <strong className="text-primary text-lg">{reference.author}</strong>
+                            <span className="text-gray-500 ml-2">({reference.publicationDate})</span>
+                          </p>
+                          <p className="mt-2">
+                            {reference.url ? (
+                              <a 
+                                href={reference.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-secondary hover:text-tertiary font-medium transition-colors duration-300 hover:underline"
+                              >
+                                {reference.title}
+                              </a>
+                            ) : (
+                              <span className="text-gray-800 font-medium">{reference.title}</span>
+                            )}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </motion.div>
+    </div>
+  </section>
+);
+
+// Objectives Section Component
+const ObjectivesSection = ({ objectives }) => (
+  <section className="py-20 bg-gradient-to-br from-gray-50 to-gray-100 relative overflow-hidden">
+    <div className="absolute inset-0 bg-gradient-to-br from-blue-50/20 to-orange-50/20"></div>
+    <div className="relative container mx-auto px-4 sm:px-6 lg:px-8">
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.3 }}
+        variants={staggerContainer}
+        className="max-w-7xl mx-auto"
+      >
+        <motion.div variants={fadeInUp} className="text-center mb-16">
+          <h2 className="text-4xl sm:text-5xl font-bold text-primary mb-6">
+            {objectives.title}
+          </h2>
+          <div className="w-24 h-1 bg-gradient-to-r from-secondary to-tertiary mx-auto mb-8"></div>
+        </motion.div>
+
+        <motion.div variants={fadeInUp} className="mb-16">
+          <div className="bg-white rounded-2xl shadow-2xl p-8 sm:p-12 border border-gray-100 relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-2 h-full bg-gradient-to-b from-tertiary to-secondary"></div>
+            <div 
+              className="text-lg sm:text-xl text-gray-700 leading-relaxed pl-8 mb-12"
+              dangerouslySetInnerHTML={{ __html: objectives.introduction }}
+            />
+
+            {/* Specific Objectives */}
+            {objectives.specificObjectives && objectives.specificObjectives.length > 0 && (
+              <div className="pl-8">
+                <h3 className="text-3xl font-bold text-primary mb-8 flex items-center">
+                  <i className="fas fa-target mr-3 text-tertiary"></i>
+                  Specific Objectives
+                </h3>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+                  {objectives.specificObjectives
+                    .filter(obj => obj.isActive)
+                    .sort((a, b) => a.displayOrder - b.displayOrder)
+                    .map((objective, index) => (
+                      <motion.div
+                        key={objective.id}
+                        variants={fadeInUp}
+                        className="bg-gradient-to-br from-white to-gray-50 p-6 rounded-xl border border-gray-200 hover:shadow-lg transition-all duration-300 group"
+                      >
+                        <div className="flex items-center mb-4">
+                          <div className="w-12 h-12 bg-gradient-to-br from-secondary to-tertiary text-white rounded-full flex items-center justify-center text-lg font-bold mr-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            {index + 1}
+                          </div>
+                          <h4 className="text-xl font-bold text-primary group-hover:text-primary/90 transition-colors">
+                            {objective.title}
+                          </h4>
+                        </div>
+                        <p className="text-gray-700 leading-relaxed pl-16">{objective.description}</p>
+                      </motion.div>
+                    ))}
+                </div>
+              </div>
+            )}
+
+            {objectives.conclusion && (
+              <div className="pt-8 border-t border-gray-200 bg-gradient-to-br from-gray-50 to-gray-100 p-8 rounded-xl ml-8">
+                <h4 className="text-2xl font-bold text-primary mb-4 flex items-center">
+                  <i className="fas fa-flag-checkered mr-3 text-tertiary"></i>
+                  Conclusion
+                </h4>
+                <div 
+                  className="text-gray-700 leading-relaxed"
+                  dangerouslySetInnerHTML={{ __html: objectives.conclusion }}
+                />
+              </div>
+            )}
+          </div>
+        </motion.div>
+      </motion.div>
+    </div>
+  </section>
+);
+
+// Last Updated Section Component
+const LastUpdatedSection = ({ lastUpdated }) => (
+  <section className="py-8 bg-white border-t border-gray-200">
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="text-center"
+      >
+        <div className="inline-flex items-center gap-2 bg-gradient-to-r from-gray-50 to-gray-100 px-6 py-3 rounded-full border border-gray-200">
+          <i className="fas fa-clock text-secondary"></i>
+          <span className="text-sm font-medium text-gray-600">
+            Last updated: {new Date(lastUpdated).toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit'
+            })}
+          </span>
+        </div>
+      </motion.div>
+    </div>
+  </section>
+);
+
+// No Content Section Component
+const NoContentSection = () => (
+  <section className="py-20 bg-white">
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.6 }}
+        className="text-center"
+      >
+        <div className="max-w-2xl mx-auto bg-gradient-to-br from-gray-50 to-gray-100 p-16 rounded-2xl shadow-xl border border-gray-200">
+          <div className="w-24 h-24 bg-gradient-to-br from-secondary to-tertiary rounded-full flex items-center justify-center mx-auto mb-8">
+            <i className="fas fa-info-circle text-white text-4xl"></i>
+          </div>
+          <h3 className="text-3xl font-bold text-primary mb-6">No Content Available</h3>
+          <p className="text-xl text-gray-600 leading-relaxed">
+            About content will be loaded from the backend API when available.
+          </p>
+        </div>
+      </motion.div>
+    </div>
+  </section>
+);
 
 export default About;
