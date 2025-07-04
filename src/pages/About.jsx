@@ -66,7 +66,12 @@ const About = () => {
       }
       
       if (benefitsResponse.status === 'fulfilled' && benefitsResponse.value.success) {
-        setStemBenefits(benefitsResponse.value.data.benefits || benefitsResponse.value.data || []);
+        const benefitsData = benefitsResponse.value.data;
+        // Ensure benefits is always an array
+        const benefits = Array.isArray(benefitsData) ? benefitsData : 
+                        benefitsData?.benefits ? benefitsData.benefits : 
+                        [];
+        setStemBenefits(benefits);
       }
 
       // No fallback data - only dynamic content
@@ -149,10 +154,14 @@ const About = () => {
 
     // Add STEM benefits
     stemBenefits.forEach(benefit => {
+      const benefitText = typeof benefit === 'string' 
+        ? benefit 
+        : benefit.benefit || benefit.description || benefit.title || 'Benefit content';
+      
       content.push({
-        id: `benefit-${benefit.id}`,
+        id: `benefit-${benefit.id || Math.random()}`,
         title: 'STEM Benefit',
-        content: benefit.benefit,
+        content: benefitText,
         section: 'STEM Benefits',
         category: 'stem-benefits'
       });
@@ -441,7 +450,7 @@ const About = () => {
               <h2 className="text-4xl font-bold text-primary mb-6">About Our Project</h2>
               <div className="max-w-4xl mx-auto">
                 <p className="text-xl text-gray-600 mb-8">
-                  {aboutData.overview}
+                  {typeof aboutData.overview === 'string' ? aboutData.overview : 'Overview content will be loaded from API'}
                 </p>
                 {/* Feature highlights will be loaded from API if available */}
                 {aboutData.highlights && aboutData.highlights.length > 0 && (
@@ -494,9 +503,9 @@ const About = () => {
                   </h3>
                   <div className="text-gray-700">
                     {backgroundData.sections?.[0]?.content ? (
-                      <div dangerouslySetInnerHTML={{ __html: backgroundData.sections[0].content }} />
+                      <div dangerouslySetInnerHTML={{ __html: String(backgroundData.sections[0].content) }} />
                     ) : backgroundData.content ? (
-                      <div dangerouslySetInnerHTML={{ __html: backgroundData.content }} />
+                      <div dangerouslySetInnerHTML={{ __html: String(backgroundData.content) }} />
                     ) : (
                       <div className="text-center py-8">
                         <i className="fas fa-info-circle text-gray-400 text-2xl mb-2"></i>
@@ -523,7 +532,11 @@ const About = () => {
                           <span className="text-tertiary mr-2">
                             <i className="fas fa-check-circle mt-1"></i>
                           </span>
-                          <span>{benefit.benefit || benefit}</span>
+                          <span>
+                            {typeof benefit === 'string' 
+                              ? benefit 
+                              : benefit.benefit || benefit.description || benefit.title || 'Benefit content'}
+                          </span>
                         </motion.li>
                       ))}
                     </ul>
@@ -583,7 +596,7 @@ const About = () => {
               </h2>
               <div className="bg-gray-50 p-8 rounded-lg shadow-lg">
                 <div className="text-gray-700">
-                  <div dangerouslySetInnerHTML={{ __html: justificationData.content }} />
+                  <div dangerouslySetInnerHTML={{ __html: String(justificationData.content || '') }} />
                 </div>
                 
                 {/* References Section */}
@@ -634,7 +647,7 @@ const About = () => {
               viewport={{ once: true, margin: "-100px" }}
             >
               <div className="text-gray-700 mb-6">
-                <div dangerouslySetInnerHTML={{ __html: objectivesData.general }} />
+                <div dangerouslySetInnerHTML={{ __html: String(objectivesData.general || '') }} />
               </div>
 
               {objectivesData.specific && objectivesData.specific.length > 0 && (
@@ -727,7 +740,7 @@ const About = () => {
                     transition={{ duration: 0.5, delay: index * 0.1 }}
                   >
                     <h4 className="text-xl font-semibold text-primary mb-3">{result.title}</h4>
-                    <div className="text-gray-700 mb-2" dangerouslySetInnerHTML={{ __html: result.content }} />
+                    <div className="text-gray-700 mb-2" dangerouslySetInnerHTML={{ __html: String(result.content || '') }} />
                     <div className="text-sm text-blue-600">{result.section}</div>
                   </motion.div>
                 ))}
