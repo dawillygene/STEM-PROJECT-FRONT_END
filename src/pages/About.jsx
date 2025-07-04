@@ -1,7 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { motion } from "framer-motion";
 import aboutService from '../services/aboutService';
 import SkeletonLoader from '../components/Common/SkeletonLoader';
+import AboutSearch from '../components/Search/AboutSearch';
+import ProjectTimeline from '../components/Timeline/ProjectTimeline';
 
 /**
  * About page component with dynamic API integration
@@ -18,6 +20,11 @@ const About = () => {
   const [statistics, setStatistics] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // Search state management
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [isSearchActive, setIsSearchActive] = useState(false);
 
   // Fetch data on component mount
   useEffect(() => {
@@ -113,6 +120,112 @@ const About = () => {
    */
   const handleRetry = () => {
     fetchAboutData();
+  };
+
+  /**
+   * Generate searchable content from all data
+   */
+  const searchableContent = useMemo(() => {
+    const content = [];
+
+    // Add background information
+    if (backgroundData) {
+      content.push({
+        id: 'background-section',
+        title: 'Project Background',
+        content: backgroundData.description || '',
+        section: 'Background',
+        category: 'background'
+      });
+    }
+
+    // Add justification
+    if (justificationData) {
+      content.push({
+        id: 'justification-section',
+        title: 'Project Justification',
+        content: justificationData.description || '',
+        section: 'Justification',
+        category: 'justification'
+      });
+    }
+
+    // Add objectives
+    if (objectivesData) {
+      content.push({
+        id: 'objectives-section',
+        title: 'Project Objectives',
+        content: objectivesData.general || '',
+        section: 'Objectives',
+        category: 'objectives'
+      });
+
+      // Add specific objectives
+      objectivesData.specific?.forEach(objective => {
+        content.push({
+          id: `objective-${objective.id}`,
+          title: objective.title,
+          content: objective.description,
+          section: 'Specific Objectives',
+          category: 'objectives'
+        });
+      });
+    }
+
+    // Add STEM benefits
+    stemBenefits.forEach(benefit => {
+      content.push({
+        id: `benefit-${benefit.id}`,
+        title: 'STEM Benefit',
+        content: benefit.benefit,
+        section: 'STEM Benefits',
+        category: 'stem-benefits'
+      });
+    });
+
+    // Add statistics
+    if (statistics) {
+      Object.entries(statistics).forEach(([key, value]) => {
+        if (typeof value === 'object' && value.value) {
+          content.push({
+            id: `stat-${key}`,
+            title: value.label || key,
+            content: `${value.value} ${value.description || ''}`,
+            section: 'Statistics',
+            category: 'statistics'
+          });
+        }
+      });
+    }
+
+    return content;
+  }, [backgroundData, justificationData, objectivesData, stemBenefits, statistics]);
+
+  /**
+   * Handle search results
+   */
+  const handleSearchResults = (results) => {
+    setSearchResults(results);
+    setIsSearchActive(results.length > 0);
+  };
+
+  /**
+   * Handle search term change
+   */
+  const handleSearchChange = (term) => {
+    setSearchTerm(term);
+    setIsSearchActive(term.length > 0);
+  };
+
+  /**
+   * Filter content based on search results
+   */
+  const shouldShowSection = (sectionId) => {
+    if (!isSearchActive) return true;
+    return searchResults.some(result => 
+      result.id === sectionId || 
+      result.id.startsWith(sectionId.replace('-section', ''))
+    );
   };
 
   // Animation variants
@@ -534,6 +647,90 @@ const About = () => {
         </div>
       </section>
 
+      {/* Project Timeline Section */}
+      <section className="py-16 bg-gray-50">
+        <div className="container mx-auto px-6">
+          <motion.h2 
+            className="text-3xl font-bold text-primary mb-12 text-center"
+            initial={{ opacity: 0, y: -20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            viewport={{ once: true }}
+          >
+            Project Timeline
+          </motion.h2>
+          
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            viewport={{ once: true }}
+          >
+            <ProjectTimeline 
+              timelineData={[]} // Can be populated from API in future
+              loading={loading}
+              onPhaseClick={(phase) => {
+                console.log('Phase clicked:', phase);
+              }}
+            />
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Search Component - Always visible */}
+      <div className="fixed top-16 right-4 left-4 z-50">
+        <AboutSearch 
+          searchableContent={searchableContent}
+          onSearchChange={handleSearchChange}
+          onSearchResults={handleSearchResults}
+        />
+      </div>
+
+      {/* Search Results Display */}
+      {isSearchActive && (
+        <section className="py-16 bg-gray-50">
+          <div className="container mx-auto px-6">
+            <motion.h2 
+              className="text-3xl font-bold text-primary mb-12"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              Search Results {searchResults.length > 0 && `(${searchResults.length})`}
+            </motion.h2>
+
+            {searchResults.length === 0 ? (
+              <div className="text-center py-8">
+                <p className="text-gray-500">
+                  No results found for "<span className="font-semibold">{searchTerm}</span>". Please try again with different keywords.
+                </p>
+              </div>
+            ) : (
+              <motion.div 
+                className="grid grid-cols-1 md:grid-cols-2 gap-6"
+                variants={containerVariants}
+                initial="hidden"
+                animate="visible"
+              >
+                {searchResults.map((result, index) => (
+                  <motion.div 
+                    key={result.id}
+                    className="bg-white p-6 rounded-lg shadow-md"
+                    variants={itemVariants}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                  >
+                    <h4 className="text-xl font-semibold text-primary mb-3">{result.title}</h4>
+                    <div className="text-gray-700 mb-2" dangerouslySetInnerHTML={{ __html: result.content }} />
+                    <div className="text-sm text-blue-600">{result.section}</div>
+                  </motion.div>
+                ))}
+              </motion.div>
+            )}
+          </div>
+        </section>
+      )}
     </>
   );
 };

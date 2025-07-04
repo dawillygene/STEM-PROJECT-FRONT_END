@@ -1,17 +1,34 @@
 import API from './api.js';
+import contentCache from './contentCache.js';
 
 /**
  * About Service for handling about page content related API calls
+ * Now with caching support
  */
 class AboutService {
+  constructor() {
+    this.cacheExpiration = 30 * 60 * 1000; // 30 minutes
+  }
+
   /**
-   * Get all about page content
+   * Get all about page content with caching
    * @param {Object} params - Query parameters
    * @param {string} params.section - Filter by specific section
    * @param {boolean} params.published - Filter by published status
+   * @param {boolean} params.useCache - Whether to use cache (default: true)
    * @returns {Promise<Object>} About page content data
    */
   async getAboutContent(params = {}) {
+    const cacheKey = `about-content-${JSON.stringify(params)}`;
+    
+    // Check cache first unless explicitly disabled
+    if (params.useCache !== false) {
+      const cachedData = contentCache.get(cacheKey);
+      if (cachedData) {
+        return cachedData;
+      }
+    }
+
     try {
       const queryString = new URLSearchParams();
       
@@ -20,7 +37,14 @@ class AboutService {
 
       const endpoint = `/about-content${queryString.toString() ? `?${queryString.toString()}` : ''}`;
       const response = await API.get(endpoint);
-      return await response.json();
+      const data = await response.json();
+      
+      // Cache the result
+      if (data.success) {
+        contentCache.set(cacheKey, data, this.cacheExpiration);
+      }
+      
+      return data;
     } catch (error) {
       console.error('Error fetching about content:', error);
       throw error;
@@ -28,14 +52,32 @@ class AboutService {
   }
 
   /**
-   * Get specific section content
+   * Get specific section content with caching
    * @param {string} section - Section name (background, benefits, justification, objectives)
+   * @param {boolean} useCache - Whether to use cache (default: true)
    * @returns {Promise<Object>} Section content data
    */
-  async getSectionContent(section) {
+  async getSectionContent(section, useCache = true) {
+    const cacheKey = `section-content-${section}`;
+    
+    // Check cache first unless explicitly disabled
+    if (useCache) {
+      const cachedData = contentCache.get(cacheKey);
+      if (cachedData) {
+        return cachedData;
+      }
+    }
+
     try {
       const response = await API.get(`/about-content/${section}`);
-      return await response.json();
+      const data = await response.json();
+      
+      // Cache the result
+      if (data.success) {
+        contentCache.set(cacheKey, data, this.cacheExpiration);
+      }
+      
+      return data;
     } catch (error) {
       console.error(`Error fetching ${section} content:`, error);
       throw error;
@@ -43,7 +85,7 @@ class AboutService {
   }
 
   /**
-   * Update section content (Admin only)
+   * Update section content (Admin only) - clears cache
    * @param {string} section - Section name
    * @param {Object} contentData - Updated content data
    * @returns {Promise<Object>} Updated content data
@@ -51,7 +93,12 @@ class AboutService {
   async updateSectionContent(section, contentData) {
     try {
       const response = await API.put(`/about-content/${section}`, contentData);
-      return await response.json();
+      const data = await response.json();
+      
+      // Clear cache for this section
+      contentCache.remove(`section-content-${section}`);
+      
+      return data;
     } catch (error) {
       console.error(`Error updating ${section} content:`, error);
       throw error;
@@ -59,35 +106,79 @@ class AboutService {
   }
 
   /**
-   * Get background information content
+   * Get background information content with caching
+   * @param {boolean} useCache - Whether to use cache (default: true)
    * @returns {Promise<Object>} Background section data
    */
-  async getBackgroundContent() {
-    return this.getSectionContent('background');
+  async getBackgroundContent(useCache = true) {
+    return this.getSectionContent('background', useCache);
   }
 
   /**
-   * Get STEM benefits list
+   * Get STEM benefits list with caching
+   * @param {boolean} useCache - Whether to use cache (default: true)
    * @returns {Promise<Object>} STEM benefits data
    */
-  async getStemBenefits() {
-    return this.getSectionContent('benefits');
+  async getStemBenefits(useCache = true) {
+    return this.getSectionContent('benefits', useCache);
   }
 
   /**
-   * Get project justification content
+   * Get project justification content with caching
+   * @param {boolean} useCache - Whether to use cache (default: true)
    * @returns {Promise<Object>} Justification section data
    */
-  async getJustificationContent() {
-    return this.getSectionContent('justification');
+  async getJustificationContent(useCache = true) {
+    return this.getSectionContent('justification', useCache);
   }
 
   /**
-   * Get project objectives content
+   * Get project objectives content with caching
+   * @param {boolean} useCache - Whether to use cache (default: true)
    * @returns {Promise<Object>} Objectives section data
    */
-  async getObjectivesContent() {
-    return this.getSectionContent('objectives');
+  async getObjectivesContent(useCache = true) {
+    return this.getSectionContent('objectives', useCache);
+  }
+
+  // Alias methods for backward compatibility
+  async getBackgroundInfo(useCache = true) {
+    return this.getBackgroundContent(useCache);
+  }
+
+  async getJustification(useCache = true) {
+    return this.getJustificationContent(useCache);
+  }
+
+  async getObjectives(useCache = true) {
+    return this.getObjectivesContent(useCache);
+  }
+
+  async getStatistics(useCache = true) {
+    const cacheKey = 'statistics-data';
+    
+    // Check cache first unless explicitly disabled
+    if (useCache) {
+      const cachedData = contentCache.get(cacheKey);
+      if (cachedData) {
+        return cachedData;
+      }
+    }
+
+    try {
+      const response = await API.get('/about-content/statistics');
+      const data = await response.json();
+      
+      // Cache the result
+      if (data.success) {
+        contentCache.set(cacheKey, data, this.cacheExpiration);
+      }
+      
+      return data;
+    } catch (error) {
+      console.error('Error fetching statistics:', error);
+      throw error;
+    }
   }
 
   /**
@@ -286,21 +377,24 @@ class AboutService {
   }
 
   /**
-   * Restore content to a previous version (Admin only)
-   * @param {string} section - Section name
-   * @param {number} versionId - Version ID to restore
-   * @returns {Promise<Object>} Restored content data
+   * Clear cache for about content
+   * @param {string} section - Specific section to clear (optional)
    */
-  async restoreContentVersion(section, versionId) {
-    try {
-      const response = await API.post(`/about-content/${section}/restore`, { 
-        version_id: versionId 
-      });
-      return await response.json();
-    } catch (error) {
-      console.error(`Error restoring ${section} content version:`, error);
-      throw error;
+  clearCache(section = null) {
+    if (section) {
+      contentCache.remove(`about-content-${section}`);
+    } else {
+      // Clear all about content cache
+      contentCache.clearAll();
     }
+  }
+
+  /**
+   * Get cache statistics
+   * @returns {Object} Cache statistics
+   */
+  getCacheStats() {
+    return contentCache.getStats();
   }
 }
 
