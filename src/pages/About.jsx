@@ -347,6 +347,17 @@ const About = () => {
 
   return (
     <>
+      {/* Search Component - Inline at the top */}
+      <section className="py-8 bg-gray-50 border-b border-gray-200">
+        <div className="container mx-auto px-6">
+          <AboutSearch 
+            searchableContent={searchableContent}
+            onSearchChange={handleSearchChange}
+            onSearchResults={handleSearchResults}
+          />
+        </div>
+      </section>
+
       <section id="about" className="py-16 bg-white">
         <div className="container mx-auto px-6">
           <motion.h2 
@@ -676,15 +687,6 @@ const About = () => {
           </motion.div>
         </div>
       </section>
-
-      {/* Search Component - Always visible */}
-      <div className="fixed top-16 right-4 left-4 z-50">
-        <AboutSearch 
-          searchableContent={searchableContent}
-          onSearchChange={handleSearchChange}
-          onSearchResults={handleSearchResults}
-        />
-      </div>
 
       {/* Search Results Display */}
       {isSearchActive && (
