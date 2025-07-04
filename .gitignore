@@ -23,28 +23,47 @@ dist-ssr
 *.sln
 *.sw?
 
-# Documentation and tracking files (per Copilot rules)
-checklist.md
-progress.md
-api_docs/
-docs/
-*.test.js
-*.spec.js
-test/
+# Copilot Rules - Rule 1: All test case files must be ignored
+# Test files and directories
+**/*.test.js
+**/*.test.jsx
+**/*.test.ts
+**/*.test.tsx
+**/*.spec.js
+**/*.spec.jsx
+**/*.spec.ts
+**/*.spec.tsx
+src/tests/
 tests/
+__tests__/
 coverage/
 .nyc_output/
+jest.config.*
+vitest.config.*
 
-# Environment and sensitive files
+# Copilot Rules - Rule 2: Non-code files must be ignored (except README.md)
+# Documentation and tracking files
+*.md
+!README.md
+api_docs/
+docs/
+checklist.md
+progress.md
+CHANGELOG.md
+TODO.md
+NOTES.md
+ROADMAP.md
+
+# Copilot Rules - Rule 10: Secure sensitive data via .env
+# Environment files
 .env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
 
-# Temporary files
+# Temporary files and artifacts
 *.tmp
 *.temp
-README-draft.md
-design-notes.md
-progress-tracker.md
+.cache/
+.temp/
