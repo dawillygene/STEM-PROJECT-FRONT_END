@@ -92,6 +92,30 @@ const About = () => {
    * Set fallback data when API fails
    */
   const setFallbackData = () => {
+    // Fallback about data
+    setAboutData({
+      overview: "Strengthening STEM education in Tanzania through comprehensive teacher training, laboratory enhancement, and community engagement to build a skilled workforce for the 21st century."
+    });
+
+    // Fallback background data
+    setBackgroundData({
+      title: "Background Information",
+      sections: [{
+        title: "The Importance of Science Education",
+        content: "The science education field has been acknowledged to play a significant role in sustainable development all over the world. In the 21st century, science education is vital for countries' economic competitiveness, peace and security, and general quality of life."
+      }]
+    });
+
+    // Fallback justification data
+    setJustificationData({
+      title: "Justification of the Project",
+      content: "The STEM-related workforce has been increasingly becoming important in the 21st century and many societies tend to integrate STEM education into the education curriculum with the intention of bringing about meaningful learning among the students.",
+      references: [
+        { author: "Smith, J.", year: "2019", title: "The Future of STEM Education", journal: "Educational Research Journal" },
+        { author: "Matete, M.", year: "2022", title: "Science Education in Tanzania", type: "Literature Review" }
+      ]
+    });
+
     // Fallback STEM benefits
     setStemBenefits([
       { id: 1, benefit: "Creates active, creative, critical, and communicative individuals", category: "personal-development", order: 1 },
@@ -113,6 +137,21 @@ const About = () => {
         { id: 4, title: "Laboratory Enhancement", description: "Strengthening laboratory services for effective teaching and learning of science subjects.", order: 4 }
       ]
     });
+
+    // Fallback statistics
+    setStatistics({
+      targets: {
+        schools: 50,
+        teachers: 200,
+        students: 5000,
+        communities: 25
+      },
+      partners: [
+        { name: "Ministry of Education", type: "Government Partner" },
+        { name: "University of Dodoma", type: "Academic Partner" },
+        { name: "Local Communities", type: "Community Partner" }
+      ]
+    });
   };
 
   /**
@@ -128,12 +167,23 @@ const About = () => {
   const searchableContent = useMemo(() => {
     const content = [];
 
+    // Add overview
+    if (aboutData?.overview) {
+      content.push({
+        id: 'overview-section',
+        title: 'Project Overview',
+        content: aboutData.overview,
+        section: 'Overview',
+        category: 'overview'
+      });
+    }
+
     // Add background information
     if (backgroundData) {
       content.push({
         id: 'background-section',
         title: 'Project Background',
-        content: backgroundData.description || '',
+        content: backgroundData.description || backgroundData.sections?.[0]?.content || '',
         section: 'Background',
         category: 'background'
       });
@@ -144,7 +194,7 @@ const About = () => {
       content.push({
         id: 'justification-section',
         title: 'Project Justification',
-        content: justificationData.description || '',
+        content: justificationData.content || justificationData.description || '',
         section: 'Justification',
         category: 'justification'
       });
@@ -199,7 +249,7 @@ const About = () => {
     }
 
     return content;
-  }, [backgroundData, justificationData, objectivesData, stemBenefits, statistics]);
+  }, [aboutData, backgroundData, justificationData, objectivesData, stemBenefits, statistics]);
 
   /**
    * Handle search results
@@ -360,6 +410,45 @@ const About = () => {
 
       <section id="about" className="py-16 bg-white">
         <div className="container mx-auto px-6">
+          {/* Overview Section */}
+          <motion.div 
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <h2 className="text-4xl font-bold text-primary mb-6">About Our Project</h2>
+            <div className="max-w-4xl mx-auto">
+              <p className="text-xl text-gray-600 mb-8">
+                {aboutData?.overview || "Strengthening STEM education in Tanzania through comprehensive teacher training, laboratory enhancement, and community engagement to build a skilled workforce for the 21st century."}
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i className="fas fa-chalkboard-teacher text-primary text-2xl"></i>
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-2">Teacher Training</h3>
+                  <p className="text-gray-600">Capacity building for science teachers</p>
+                </div>
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-secondary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i className="fas fa-flask text-secondary text-2xl"></i>
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-2">Laboratory Enhancement</h3>
+                  <p className="text-gray-600">Modern equipment and facilities</p>
+                </div>
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-tertiary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i className="fas fa-users text-tertiary text-2xl"></i>
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-2">Community Engagement</h3>
+                  <p className="text-gray-600">Parents and community involvement</p>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Background Section */}
           <motion.h2 
             className="text-3xl font-bold text-primary mb-12"
             initial={{ opacity: 0, y: -20 }}
