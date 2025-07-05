@@ -3,7 +3,7 @@ import React from 'react';
 const EthicsSection = ({ data }) => {
   if (!data || !data.principles?.length) {
     return (
-      <section className="py-16 bg-gray-100">
+      <section className="py-16 bg-gray-100" data-section="ethics">
         <div className="container mx-auto px-6">
           <h2 className="text-3xl font-bold text-primary mb-8 section-heading">
             Ethical Concerns
@@ -19,7 +19,7 @@ const EthicsSection = ({ data }) => {
   }
 
   return (
-    <section className="py-16" style={{ backgroundColor: data.background_color || '#f8f9fa' }}>
+    <section className="py-16" style={{ backgroundColor: data.background_color || '#f8f9fa' }} data-section="ethics">
       <div className="container mx-auto px-6">
         <h2 className="text-3xl font-bold text-primary mb-8 section-heading">
           {data.title}

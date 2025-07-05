@@ -3,7 +3,7 @@ import React from 'react';
 const MonitoringSection = ({ data }) => {
   if (!data || !data.monitoring_aspects?.length) {
     return (
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white" data-section="monitoring">
         <div className="container mx-auto px-6">
           <h2 className="text-3xl font-bold text-primary mb-12 section-heading">
             Project Monitoring and Evaluation
@@ -19,7 +19,7 @@ const MonitoringSection = ({ data }) => {
   }
 
   return (
-    <section className="py-16" style={{ backgroundColor: data.background_color || 'white' }}>
+    <section className="py-16" style={{ backgroundColor: data.background_color || 'white' }} data-section="monitoring">
       <div className="container mx-auto px-6">
         <h2 className="text-3xl font-bold text-primary mb-12 section-heading">
           {data.title}

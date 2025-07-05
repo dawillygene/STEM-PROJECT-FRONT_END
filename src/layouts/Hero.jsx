@@ -1,12 +1,62 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import hero_img from '../assets/img/hero.png';
 import { motion } from 'framer-motion';
+import { searchContent, executeSearch } from '../utils/searchUtils';
 
 const Hero = ({ heroData }) => {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchMessage, setSearchMessage] = useState('');
+  const navigate = useNavigate();
+
   useEffect(() => {
     return () => {
     };
   }, []);
+
+  // Handle search form submission
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    if (!searchQuery.trim()) return;
+
+    setIsSearching(true);
+    setSearchMessage('');
+    
+    try {
+      // Use the search utility to process the search
+      const searchResult = searchContent(searchQuery);
+      const result = executeSearch(searchResult, navigate);
+      
+      if (result.success) {
+        setSearchMessage(result.message);
+        // Clear the search input after successful search
+        setTimeout(() => {
+          setSearchQuery('');
+          setSearchMessage('');
+        }, 2000);
+      } else {
+        setSearchMessage(result.message);
+        // Clear error message after 5 seconds
+        setTimeout(() => {
+          setSearchMessage('');
+        }, 5000);
+      }
+    } catch (error) {
+      console.error('Search error:', error);
+      setSearchMessage('Search functionality is temporarily unavailable. Please try again later.');
+      setTimeout(() => {
+        setSearchMessage('');
+      }, 3000);
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
+  // Handle search input change
+  const handleSearchInputChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
 
   // Use dynamic data if available, otherwise fall back to static content
   const title = heroData?.title || 'Enhancing Mathematics and Science Education in Secondary Schools in Tanzania';
@@ -114,23 +164,40 @@ const Hero = ({ heroData }) => {
                     animate={{ y: 0, opacity: 1 }}
                     transition={{ duration: 0.8, delay: 0.3 }}
                   >
-                    <form className="flex flex-col sm:flex-row gap-2 items-center sm:items-end w-full">
+                    <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-2 items-center sm:items-end w-full">
                       <motion.input
                         type="text"
                         placeholder={searchPlaceholder}
+                        value={searchQuery}
+                        onChange={handleSearchInputChange}
                         className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-full border border-white/30 bg-white/10 text-white placeholder:text-white/70 focus:outline-none focus:border-white focus:bg-white/20 text-sm sm:text-base"
                         whileFocus={{ scale: 1.02 }}
                         transition={{ duration: 0.3 }}
                       />
                       <motion.button
                         type="submit"
-                        className="w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-3 rounded-full bg-white text-[#0066CC] hover:bg-gray-100 transition-all font-semibold text-sm sm:text-base mt-2 sm:mt-0"
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.98 }}
+                        disabled={isSearching}
+                        className="w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-3 rounded-full bg-white text-[#0066CC] hover:bg-gray-100 transition-all font-semibold text-sm sm:text-base mt-2 sm:mt-0 disabled:opacity-50 disabled:cursor-not-allowed"
+                        whileHover={{ scale: isSearching ? 1 : 1.05 }}
+                        whileTap={{ scale: isSearching ? 1 : 0.98 }}
                       >
-                        Search
+                        {isSearching ? 'Searching...' : 'Search'}
                       </motion.button>
                     </form>
+                    
+                    {/* Search Message */}
+                    {searchMessage && (
+                      <motion.div
+                        className="mt-3 p-2 rounded-lg bg-white/10 border border-white/20"
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <p className="text-white text-sm text-center">
+                          {searchMessage}
+                        </p>
+                      </motion.div>
+                    )}
                   </motion.div>
                 )}
               </div>
