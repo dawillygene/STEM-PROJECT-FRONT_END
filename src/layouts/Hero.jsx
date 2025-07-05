@@ -2,15 +2,27 @@ import React, { useEffect } from 'react';
 import hero_img from '../assets/img/hero.png';
 import { motion } from 'framer-motion';
 
-const Hero = () => {
+const Hero = ({ heroData }) => {
   useEffect(() => {
     return () => {
     };
   }, []);
 
+  // Use dynamic data if available, otherwise fall back to static content
+  const title = heroData?.title || 'Enhancing Mathematics and Science Education in Secondary Schools in Tanzania';
+  const subtitle = heroData?.subtitle || 'A Partnership Program with the Ministry of Education Science and Technology (MoEST) sponsored by The United Nations Children\'s Fund (UNICEF)';
+  const description = heroData?.description || '';
+  const ctaText = heroData?.cta_text || 'Learn More';
+  const ctaLink = heroData?.cta_link || '/about';
+  const searchPlaceholder = heroData?.search_placeholder || 'Search for programs...';
+  const searchEnabled = heroData?.search_enabled !== false;
+  // Always use static background image and gradient
+  const backgroundImage = hero_img;
+  const backgroundGradient = 'from-[#0066CC] to-[#FD9148]';
+
   return (
     <>
-      <section className="py-10 sm:py-16 md:py-20 bg-gradient-to-r from-[#0066CC] to-[#FD9148] text-white overflow-hidden relative">
+      <section className={`py-10 sm:py-16 md:py-20 bg-gradient-to-r ${backgroundGradient} text-white overflow-hidden relative`}>
         <motion.div
           className="absolute inset-0 opacity-10"
           initial={{ opacity: 0 }}
@@ -36,9 +48,7 @@ const Hero = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.2 }}
               >
-                Enhancing Mathematics and  <br className="hidden sm:block" />
-                <span className="block sm:inline">Science Education in Secondary </span>
-                <span className="block md:inline">Schools in Tanzania</span>
+                {title}
               </motion.h1>
               <motion.p
                 className="text-base sm:text-lg md:text-xl mb-6 sm:mb-8 text-white/90 font-inter max-w-full"
@@ -46,8 +56,18 @@ const Hero = () => {
                 animate={{ opacity: 1, y: 0, x: 0, sm: { x: 20 }, md: { x: 50 } }}
                 transition={{ duration: 0.8, delay: 0.4 }}
               >
-                A Partnership Program with the Ministry of Education Science and Technology (MoEST) sponsored by The United Nations Children's Fund (UNICEF)
+                {subtitle}
               </motion.p>
+              {description && (
+                <motion.p
+                  className="text-sm sm:text-base md:text-lg mb-6 sm:mb-8 text-white/80 font-inter max-w-full"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.5 }}
+                >
+                  {description}
+                </motion.p>
+              )}
 
               <motion.div
                 className="flex flex-col sm:flex-row gap-4"
@@ -56,12 +76,12 @@ const Hero = () => {
                 transition={{ duration: 0.8, delay: 0.6 }}
               >
                 <motion.a
-                  href="/about"
+                  href={ctaLink}
                   className="px-6 py-3 rounded-lg font-semibold text-center bg-[#FFAD03] hover:bg-[#FFAD03]/90 transition-all text-white w-full sm:w-auto"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.98 }}
                 >
-                  Learn More
+                  {ctaText}
                 </motion.a>
               </motion.div>
             </motion.div>
@@ -80,37 +100,39 @@ const Hero = () => {
                   transition={{ duration: 1.2 }}
                 >
                   <img
-                    src={hero_img}
+                    src={backgroundImage}
                     alt="University of Dodoma"
                     className="w-full h-full object-cover object-left"
                   />
                   <div className="absolute inset-0 bg-gradient-to-r from-[#0066CC]/70 to-[#FD9148]/70"></div>
                 </motion.div>
 
-                <motion.div
-                  className="relative p-4 sm:p-6 rounded-xl backdrop-blur-md bg-black/30 border border-white/20"
-                  initial={{ y: 20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ duration: 0.8, delay: 0.3 }}
-                >
-                  <form className="flex flex-col sm:flex-row gap-2 items-center sm:items-end w-full">
-                    <motion.input
-                      type="text"
-                      placeholder="Search for programs..."
-                      className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-full border border-white/30 bg-white/10 text-white placeholder:text-white/70 focus:outline-none focus:border-white focus:bg-white/20 text-sm sm:text-base"
-                      whileFocus={{ scale: 1.02 }}
-                      transition={{ duration: 0.3 }}
-                    />
-                    <motion.button
-                      type="submit"
-                      className="w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-3 rounded-full bg-white text-[#0066CC] hover:bg-gray-100 transition-all font-semibold text-sm sm:text-base mt-2 sm:mt-0"
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      Search
-                    </motion.button>
-                  </form>
-                </motion.div>
+                {searchEnabled && (
+                  <motion.div
+                    className="relative p-4 sm:p-6 rounded-xl backdrop-blur-md bg-black/30 border border-white/20"
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ duration: 0.8, delay: 0.3 }}
+                  >
+                    <form className="flex flex-col sm:flex-row gap-2 items-center sm:items-end w-full">
+                      <motion.input
+                        type="text"
+                        placeholder={searchPlaceholder}
+                        className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-full border border-white/30 bg-white/10 text-white placeholder:text-white/70 focus:outline-none focus:border-white focus:bg-white/20 text-sm sm:text-base"
+                        whileFocus={{ scale: 1.02 }}
+                        transition={{ duration: 0.3 }}
+                      />
+                      <motion.button
+                        type="submit"
+                        className="w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-3 rounded-full bg-white text-[#0066CC] hover:bg-gray-100 transition-all font-semibold text-sm sm:text-base mt-2 sm:mt-0"
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        Search
+                      </motion.button>
+                    </form>
+                  </motion.div>
+                )}
               </div>
             </motion.div>
             <motion.div

@@ -46,7 +46,7 @@ vitest.config.*
 *.md
 !README.md
 api_docs/
-docs/
+docs/**
 checklist.md
 progress.md
 CHANGELOG.md
