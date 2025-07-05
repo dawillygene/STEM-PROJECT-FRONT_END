@@ -111,10 +111,10 @@ const About = () => {
             <p className="text-gray-600 mb-8 leading-relaxed">{error}</p>
             <button
               onClick={handleRetry}
-              className="bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-white px-8 py-3 rounded-full font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg"
+              className="bg-[#0066CC] hover:bg-[#0055aa] text-white px-8 py-3 rounded-full font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg"
             >
-              <i className="fas fa-redo mr-2"></i>
-              Try Again
+              <i className="fas fa-redo mr-2 text-white"></i>
+              <span className="text-white">Try Again</span>
             </button>
           </div>
         </motion.div>
@@ -145,15 +145,15 @@ const About = () => {
               transition={{ duration: 0.8, ease: "easeOut" }}
             >
               <motion.h1
-                className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight mb-4 drop-shadow-md font-inter max-w-full"
+                className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight mb-4 drop-shadow-lg font-inter max-w-full text-white"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.2 }}
               >
-                About Our <span className="text-[#FFAD03]">STEM</span> Initiative
+                About Our <span className="text-[#FFAD03] drop-shadow-lg">STEM</span> Initiative
               </motion.h1>
               <motion.p
-                className="text-base sm:text-lg md:text-xl mb-6 sm:mb-8 text-white/90 font-inter max-w-full"
+                className="text-base sm:text-lg md:text-xl mb-6 sm:mb-8 text-white font-inter max-w-full drop-shadow-md"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.4 }}
@@ -169,11 +169,11 @@ const About = () => {
               >
                 <motion.a
                   href="#background"
-                  className="px-6 py-3 rounded-lg font-semibold text-center bg-[#FFAD03] hover:bg-[#FFAD03]/90 transition-all text-white w-full sm:w-auto"
+                  className="px-6 py-3 rounded-lg font-semibold text-center bg-[#FFAD03] hover:bg-[#e69c00] transition-all w-full sm:w-auto"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.98 }}
                 >
-                  Learn More
+                  <span className="text-white font-semibold">Learn More</span>
                 </motion.a>
               </motion.div>
             </motion.div>
@@ -297,10 +297,10 @@ const About = () => {
               >
                 <a
                   href={aboutContent.background.ctaLink}
-                  className="px-6 py-3 rounded-lg font-semibold text-center bg-[#FFAD03] hover:bg-[#FFAD03]/90 transition-all text-white inline-flex items-center gap-2"
+                  className="px-6 py-3 rounded-lg font-semibold text-center bg-[#FFAD03] hover:bg-[#e69c00] transition-all inline-flex items-center gap-2"
                 >
-                  {aboutContent.background.ctaText}
-                  <i className="fas fa-arrow-right"></i>
+                  <span className="text-white">{aboutContent.background.ctaText}</span>
+                  <i className="fas fa-arrow-right text-white"></i>
                 </a>
               </motion.div>
             )}
